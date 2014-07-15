@@ -5,6 +5,8 @@
 var gameZIndex = {bg: 0, ui: 1, score:2}
 
 var gameLayer = cc.LayerColor.extend({
+    spriteSheet:null,
+    runningAction:null,
     groundArray : null,
     rockArray : null,
     coinArray : null,
@@ -20,14 +22,15 @@ var gameLayer = cc.LayerColor.extend({
 
     init : function(){
         //background
-        var bg = cc.Sprite.create(s_background);
-        this.addChild(bg, gameZIndex.bg);
+        //var bg = cc.Sprite.create(s_background);
+        //  this.addChild(bg, gameZIndex.bg);
         //this.gameLayer.setColor(cc.c4(255,255,255,255));
-        bg.setAnchorPoint(0,0);
-        bg.setPosition(0,0);
+        //bg.setAnchorPoint(0,0);
+        //bg.setPosition(0,0);
         //player
-        this.player = new player(100, 200);
-        this.addChild(this.player, gameZIndex.ui);
+        this.initPlayer();
+        //this.player = new player(100, 200);
+        //this.addChild(this.player, gameZIndex.ui);
         //ground rock coin
         this.groundArray = [];
         this.rockArray = [];
@@ -51,6 +54,26 @@ var gameLayer = cc.LayerColor.extend({
         this.schedule(this.updateScore, 0);
         //speed up
         this.schedule(this.speedUp, 5);
+    },
+
+    initPlayer : function(){
+        this._super();
+        // create sprite sheet
+        cc.SpriteFrameCache.getInstance().addSpriteFrames(s_runnerplist);
+        this.spriteSheet = cc.SpriteBatchNode.create(s_runner);
+        this.addChild(this.spriteSheet, gameZIndex.ui);
+        // init runningAction
+        var animFrames = [];
+        for (var i = 1; i < 9; i++) {
+            var str = i + ".png";
+            var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
+            animFrames.push(frame);
+        }
+        var animation = cc.Animation.create(animFrames, 0.1);
+        this.runningAction = cc.RepeatForever.create(cc.Animate.create(animation));
+        this.player = new player(300, 300, '1.png');
+        this.player.runAction(this.runningAction);
+        this.spriteSheet.addChild(this.player);
     },
 
     updateGround : function(){
@@ -245,6 +268,7 @@ var gameLayer = cc.LayerColor.extend({
 var gameScene = cc.Scene.extend({
     onEnter : function(){
         this._super();
+        this.addChild(new BackgroundLayer);
         this.addChild(new gameLayer);
     }
 });

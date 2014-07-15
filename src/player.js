@@ -10,11 +10,11 @@ var player = cc.Sprite.extend({
     flyLable : null,
     one_jump : null, two_jump : null,
 
-    ctor : function(x, y){
+    ctor : function(x, y, str){
         this._super();
         this.posX = eval(x);
         this.posY = eval(y);
-        this.initWithFile(s_player, cc.rect(0,0,30,30));
+        this.initWithSpriteFrameName(str);
         this.init();
     },
 

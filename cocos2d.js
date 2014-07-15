@@ -44,7 +44,8 @@
             'src/ground.js',
             'src/rock.js',
             'src/player.js',
-            'src/coin.js'
+            'src/coin.js',
+            'src/Background.js'
         ]
     };
 
