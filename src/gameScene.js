@@ -35,7 +35,7 @@ var gameLayer = cc.LayerColor.extend({
         this.rockArray = [];
         this.coinArray = [];
         this.propertyArray = [];
-        this.speed = 5;
+        this.speed = 8;
         this.groundArray[0] = new ground(1800, 50, this.speed);
         this.groundArray[0].setFirstGround();
         this.addChild(this.groundArray[0], gameZIndex.ui);
@@ -119,17 +119,19 @@ var gameLayer = cc.LayerColor.extend({
             high = this.groundArray[num-1].posY - delta;
         }
         if(high >= size.height - 500){
+            if(delta > 300)
+                delta -= 200;
             high = this.groundArray[num-1].posY - delta;
         }
         if(high < 200){
-            if(delta > 200)
-                high = this.groundArray[num-1].posY + delta;
-            else
-                high = this.groundArray[num-1].posY + delta - 200;
+            if(delta > 300)
+                delta -= 200;
+            high = this.groundArray[num-1].posY + delta;
+
         }
         //根据长度确定是否加入障碍物
         if(len > 1300){
-            for(i = 300; i <= 1200; i+=300){
+            for(i = 300; i <= 1200; i+=500){
                 if(GetRandomNum(-10, 10) > 0)
                     this.addRock(i, high+60, 0);
                 else
@@ -139,14 +141,11 @@ var gameLayer = cc.LayerColor.extend({
         //加入金币
         if(len < 1200){
             for(i = 300; i <= len-300; i+=100){
-                if(GetRandomNum(-10, 10) > 0)
-                    this.addCoin(i, high);
-                else
-                    this.addCoin(i, high);
+                    this.addCoin(i, high + 40);
             }
         }
         //加入物品
-        if(GetRandomNum(1, 100) < 40){
+        if(GetRandomNum(1, 100) < 25){
             var pos = GetRandomNum(200, len)
             if(GetRandomNum(-10, 10) > 0)
                 this.addProperty(pos, high+30, 'p_fly');
@@ -224,8 +223,8 @@ var gameLayer = cc.LayerColor.extend({
         var x = this.player.posX;
         var y = this.player.posY;
         for(var i = 0; i < this.groundArray.length; i++){
-            if(y <= this.groundArray[i].posY + 40 && y >= this.groundArray[i].posY + 20){
-                if(x > this.groundArray[i].posX - this.groundArray[i].len/2 && x < this.groundArray[i].posX + this.groundArray[i].len/2)
+            if(y <= this.groundArray[i].posY + 140 && y >= this.groundArray[i].posY + 100){
+                if(x + 30 > this.groundArray[i].posX - this.groundArray[i].len/2 && x - 10 < this.groundArray[i].posX + this.groundArray[i].len/2)
                     if(this.player.on_ground == true)
                         return;
                     else{
@@ -248,8 +247,8 @@ var gameLayer = cc.LayerColor.extend({
 
     collideRock : function(){
         for(var i = 0; i < this.rockArray.length; i++){
-            if(this.player.posX < this.rockArray[i].posX+this.rockArray[i].width && this.player.posX > this.rockArray[i].posX-this.rockArray[i].width)
-                if(this.player.posY < this.rockArray[i].posY+this.rockArray[i].height && this.player.posY > this.rockArray[i].posY-this.rockArray[i].height)
+            if(this.player.posX-50 < this.rockArray[i].posX+this.rockArray[i].width && this.player.posX+50 > this.rockArray[i].posX-this.rockArray[i].width)
+                if(this.player.posY-90 < this.rockArray[i].posY+this.rockArray[i].height && this.player.posY+90 > this.rockArray[i].posY-this.rockArray[i].height)
                     return true;
         }
         return false;
@@ -257,8 +256,8 @@ var gameLayer = cc.LayerColor.extend({
 
     collideCoin : function(){
         for(var i = 0; i < this.coinArray.length; i++){
-            if(this.player.posX < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX > this.coinArray[i].posX-this.coinArray[i].width)
-                if(this.player.posY < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY > this.coinArray[i].posY-this.coinArray[i].height){
+            if(this.player.posX-50 < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX+50 > this.coinArray[i].posX-this.coinArray[i].width)
+                if(this.player.posY-80 < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY+80 > this.coinArray[i].posY-this.coinArray[i].height){
                     this.addScore(200);
                     this.delCoin(i);
                 }
@@ -267,8 +266,8 @@ var gameLayer = cc.LayerColor.extend({
 
     collideProperty : function(){
         for(var i = 0; i < this.propertyArray.length; i++){
-            if(this.player.posX < this.propertyArray[i].posX+this.propertyArray[i].width && this.player.posX > this.propertyArray[i].posX-this.propertyArray[i].width)
-                if(this.player.posY < this.propertyArray[i].posY+this.propertyArray[i].height && this.player.posY > this.propertyArray[i].posY-this.propertyArray[i].height){
+            if(this.player.posX-50 < this.propertyArray[i].posX+this.propertyArray[i].width && this.player.posX+50 > this.propertyArray[i].posX-this.propertyArray[i].width)
+                if(this.player.posY-80 < this.propertyArray[i].posY+this.propertyArray[i].height && this.player.posY+80 > this.propertyArray[i].posY-this.propertyArray[i].height){
                     if(this.propertyArray[i].type == 'p_fly')
                         this.player.fly();
                     if(this.propertyArray[i].type == 'p_wudi')

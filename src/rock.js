@@ -3,7 +3,7 @@
  */
 
 var rock = cc.Sprite.extend({
-    speed : 5,
+    speed : null,
     width : null,
     height : null,
     posX : null,
@@ -13,14 +13,14 @@ var rock = cc.Sprite.extend({
         this._super();
         if(type == 0){
             this.initWithFile(s_rock, cc.rect(0,0,160,160));
-            this.width = 160;
-            this.height = 155;
+            this.width = 80;
+            this.height = 80;
             this.posY = eval(y) + 20;
         }
         else if(type == 1){
             this.initWithFile(s_rock, cc.rect(0,0,100,100));
-            this.width = 25;
-            this.height = 30;
+            this.width = 50;
+            this.height = 50;
             this.posY = eval(y) + 30;
         }
         this.posX = cc.Director.getInstance().getWinSize().width + eval(x);

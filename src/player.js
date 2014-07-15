@@ -21,7 +21,7 @@ var player = cc.Sprite.extend({
     init : function(){
         this.setPosition(this.posX, this.posY);
         this.velocity = 0;
-        this.accelerate = 0.8;
+        this.accelerate = 0.9;
         this.on_ground = false;
         this.one_jump = false;
         this.two_jump = false;
@@ -40,7 +40,7 @@ var player = cc.Sprite.extend({
         else if(this.one_jump == true && this.two_jump == false)
             this.two_jump = true;
         this.on_ground = false;
-        this.velocity = 22;
+        this.velocity = 20;
     },
 
     move : function(){

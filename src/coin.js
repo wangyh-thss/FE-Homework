@@ -6,7 +6,7 @@
  */
 
 var coin = cc.Sprite.extend({
-    speed : 5,
+    speed : null,
     width : null,
     height : null,
     posX : null,

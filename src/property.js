@@ -3,7 +3,7 @@
  */
 var property = cc.Sprite.extend({
     type : null,
-    speed : 5,
+    speed : null,
     width : null,
     height : null,
     posX : null,
