@@ -6,6 +6,7 @@ var s_player = "player.png";
 var s_coin = "coin.png";
 var s_runner = "runner.png";
 var s_runnerplist = "runner.plist";
+var s_fly = "fly.png";
 
 var g_resources = [
     //image
@@ -16,7 +17,8 @@ var g_resources = [
     s_runner,
     s_runnerplist,
     s_background1,
-    s_background2
+    s_background2,
+    s_fly
     //plist
 
     //fnt

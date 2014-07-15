@@ -10,10 +10,12 @@ var gameLayer = cc.LayerColor.extend({
     groundArray : null,
     rockArray : null,
     coinArray : null,
+    propertyArray : null,
     speed : null,
     player : null,
     score : null,
     scoreLabel : null,
+    undeadLabel : null,
 
     ctor : function(){
         this._super();
@@ -21,39 +23,40 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     init : function(){
-        //background
-        //var bg = cc.Sprite.create(s_background);
-        //  this.addChild(bg, gameZIndex.bg);
-        //this.gameLayer.setColor(cc.c4(255,255,255,255));
-        //bg.setAnchorPoint(0,0);
-        //bg.setPosition(0,0);
+        this.undeadLabel = false;
+
         //player
         this.initPlayer();
-        //this.player = new player(100, 200);
-        //this.addChild(this.player, gameZIndex.ui);
+
         //ground rock coin
         this.groundArray = [];
         this.rockArray = [];
         this.coinArray = [];
+        this.propertyArray = [];
         this.speed = 5;
         this.groundArray[0] = new ground(1000, 50, this.speed);
         this.groundArray[0].setFirstGround();
         this.addChild(this.groundArray[0], gameZIndex.ui);
         this.schedule(this.updateGround, 0);
+
         //event
         if( 'touches' in sys.capabilities )
             this.setTouchEnabled(true);
         else if ('mouse' in sys.capabilities )
             this.setMouseEnabled(true);
         this.schedule(this.onTheGround, 0);
+        this.schedule(this.collideProperty, 0);
+
         //judge dead
         this.schedule(this.gameOver, 0);
-        //scoreLayer
+
+        //score
         this.score = 0;
         this.initScoreLable();
         this.schedule(this.updateScore, 0);
+
         //speed up
-        this.schedule(this.speedUp, 5);
+        this.schedule(this.speedUp, 8);
     },
 
     initPlayer : function(){
@@ -137,6 +140,13 @@ var gameLayer = cc.LayerColor.extend({
                     this.addCoin(i, high, 1);
             }
         }
+        //加入物品
+        if(len > 1000){
+            if(GetRandomNum(-10, 10) > 0)
+                this.addProperty(1000, high, 'p_fly');
+            else
+                this.addProperty(200, high, 'p_undead');
+        }
         //添加到层
         this.groundArray[num] = new ground(len, high, this.speed);
         this.addChild(this.groundArray[num], gameZIndex.ui);
@@ -159,6 +169,12 @@ var gameLayer = cc.LayerColor.extend({
         this.addChild(this.coinArray[num], gameZIndex.ui);
     },
 
+    addProperty : function(x, y, style){
+        var num = this.propertyArray.length;
+        this.propertyArray[num] = new property(x, y, style, this.speed);
+        this.addChild(this.propertyArray[num], gameZIndex.ui);
+    },
+
     delGround : function(){
         var toDelete = this.groundArray.shift();
         this.removeChild(toDelete, true);
@@ -171,9 +187,13 @@ var gameLayer = cc.LayerColor.extend({
         this.removeChild(this.coinArray[eval(index)], true);
         this.coinArray.splice(eval(index), 1);
     },
+    delProperty : function(index){
+        this.removeChild(this.propertyArray[eval(index)], true);
+        this.propertyArray.splice(eval(index), 1);
+    },
 
     onMouseDown:function(event) {
-        this.player.fly();
+        this.player.jump();
     },
 
     onTheGround : function(){
@@ -196,7 +216,7 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     gameOver : function(){
-        if(this.collideRock() || this.fallDown()){
+        if((this.collideRock() && this.undeadLabel == false) || this.fallDown()){
             //dead
             console.log('dead!!');
         }
@@ -224,6 +244,19 @@ var gameLayer = cc.LayerColor.extend({
         }
     },
 
+    collideProperty : function(){
+        for(var i = 0; i < this.propertyArray.length; i++){
+            if(this.player.posX < this.propertyArray[i].posX+this.propertyArray[i].width && this.player.posX > this.propertyArray[i].posX-this.propertyArray[i].width)
+                if(this.player.posY < this.propertyArray[i].posY+this.propertyArray[i].height && this.player.posY > this.propertyArray[i].posY-this.propertyArray[i].height){
+                    if(this.propertyArray[i].type == 'p_fly')
+                        this.player.fly();
+                    if(this.propertyArray[i].type == 1)
+                        this.addScore(300);
+                    this.delProperty(i);
+                }
+        }
+    },
+
     fallDown : function(){
         if(this.player.posY < 0){
             return true;
@@ -232,15 +265,19 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     speedUp : function(){
+        var i = 0;
         this.speed = this.speed * 1.2;
-        for(var i = 0; i < this.groundArray.length; i++){
+        for(i = 0; i < this.groundArray.length; i++){
             this.groundArray[i].speed *= 1.2;
         }
-        for(var j = 0; j < this.rockArray.length; j++){
-            this.rockArray[j].speed *= 1.2;
+        for(i = 0; i < this.rockArray.length; i++){
+            this.rockArray[i].speed *= 1.2;
         }
-        for(var j = 0; j < this.coinArray.length; j++){
-            this.coinArray[j].speed *= 1.2;
+        for(i = 0; i < this.coinArray.length; i++){
+            this.coinArray[i].speed *= 1.2;
+        }
+        for(i = 0; i < this.propertyArray.length; i++){
+            this.propertyArray[i].speed *= 1.2;
         }
     },
 
@@ -262,6 +299,11 @@ var gameLayer = cc.LayerColor.extend({
     addScore : function(num){
         this.score += eval(num);
         this.scoreLabel.setString('Score: ' + this.score);
+    }
+
+    undead : function(){
+        this.undeadLabel = true;
+        this.scheduleOnce('this.undeadLable = true', 2000);
     }
 })
 
