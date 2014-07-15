@@ -137,9 +137,9 @@ var gameLayer = cc.LayerColor.extend({
         if(len < 1000){
             for(var i = 300; i <= len-200; i+=100){
                 if(GetRandomNum(-10, 10) > 0)
-                    this.addCoin(i, high, 0);
+                    this.addCoin(i, high);
                 else
-                    this.addCoin(i, high, 1);
+                    this.addCoin(i, high);
             }
         }
         //加入物品
@@ -179,12 +179,11 @@ var gameLayer = cc.LayerColor.extend({
         }
     },
 
-    addCoin : function(x, y, style){
+    addCoin : function(x, y){
         var animation = cc.Animation.create(this.animFramesCoin, 0.1);
         var coinAction = cc.RepeatForever.create(cc.Animate.create(animation));
-
         var num = this.coinArray.length;
-        this.coinArray[num] = new coin(x, y, style, this.speed, "1.png");
+        this.coinArray[num] = new coin(x, y, this.speed, "1.png");
         //this.addChild(this.coinArray[num], gameZIndex.ui);
         this.coinArray[num].runAction(coinAction);
         this.spriteSheetCoin.addChild(this.coinArray[num]);
@@ -205,7 +204,7 @@ var gameLayer = cc.LayerColor.extend({
         this.removeChild(toDelete, true);
     },
     delCoin : function(index){
-        this.removeChild(this.coinArray[eval(index)], true);
+        this.spriteSheetCoin.removeChild(this.coinArray[eval(index)], true);
         this.coinArray.splice(eval(index), 1);
     },
     delProperty : function(index){
@@ -253,13 +252,11 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     collideCoin : function(){
+        console.log(this.coinArray.length, this.propertyArray.length);
         for(var i = 0; i < this.coinArray.length; i++){
             if(this.player.posX < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX > this.coinArray[i].posX-this.coinArray[i].width)
                 if(this.player.posY < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY > this.coinArray[i].posY-this.coinArray[i].height){
-                    if(this.coinArray[i].type == 0)
                         this.addScore(200);
-                    if(this.coinArray[i].type == 1)
-                        this.addScore(300);
                     this.delCoin(i);
                 }
         }

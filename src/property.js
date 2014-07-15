@@ -19,7 +19,7 @@ var property = cc.Sprite.extend({
             this.posY = eval(y) + 20;
         }
         else if(type == 'p_undead'){
-            this.initWithFile(s_coin, cc.rect(0,0,50,60));
+            this.initWithFile(s_big, cc.rect(0,0,50,60));
             this.type = 'p_undead';
             this.width = 25;
             this.height = 30;
