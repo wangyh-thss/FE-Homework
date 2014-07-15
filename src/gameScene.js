@@ -36,7 +36,7 @@ var gameLayer = cc.LayerColor.extend({
         this.coinArray = [];
         this.propertyArray = [];
         this.speed = 5;
-        this.groundArray[0] = new ground(1000, 50, this.speed);
+        this.groundArray[0] = new ground(1800, 50, this.speed);
         this.groundArray[0].setFirstGround();
         this.addChild(this.groundArray[0], gameZIndex.ui);
         this.schedule(this.updateGround, 0);
@@ -95,6 +95,9 @@ var gameLayer = cc.LayerColor.extend({
         if(this.coinArray[0] && this.coinArray[0].posX + 20 <= 0){
             this.delCoin(0);
         }
+        if(this.propertyArray[0] && this.propertyArray[0].posX + 20 <= 0){
+            this.delProperty(0);
+        }
         var num = this.groundArray.length;
         var screenWidth = cc.Director.getInstance().getWinSize().width;
         if(screenWidth - (this.groundArray[num-1].posX + this.groundArray[num-1].len/2) >= 100){
@@ -115,10 +118,10 @@ var gameLayer = cc.LayerColor.extend({
         }else{
             high = this.groundArray[num-1].posY - delta;
         }
-        if(high >= size.height - 200){
+        if(high >= size.height - 500){
             high = this.groundArray[num-1].posY - delta;
         }
-        if(high < 100){
+        if(high < 200){
             if(delta > 200)
                 high = this.groundArray[num-1].posY + delta;
             else
@@ -134,8 +137,8 @@ var gameLayer = cc.LayerColor.extend({
             }
         }
         //加入金币
-        if(len < 1000){
-            for(i = 300; i <= len-200; i+=100){
+        if(len < 1200){
+            for(i = 300; i <= len-300; i+=100){
                 if(GetRandomNum(-10, 10) > 0)
                     this.addCoin(i, high);
                 else
@@ -143,11 +146,12 @@ var gameLayer = cc.LayerColor.extend({
             }
         }
         //加入物品
-        if(len > 1000){
+        if(GetRandomNum(1, 100) < 40){
+            var pos = GetRandomNum(200, len)
             if(GetRandomNum(-10, 10) > 0)
-                this.addProperty(1000, high, 'p_fly');
+                this.addProperty(pos, high+20, 'p_fly');
             else
-                this.addProperty(200, high, 'p_wudi');
+                this.addProperty(pos, high+10, 'p_wudi');
         }
         //添加到层
         this.groundArray[num] = new ground(len, high, this.speed);
@@ -255,7 +259,7 @@ var gameLayer = cc.LayerColor.extend({
         for(var i = 0; i < this.coinArray.length; i++){
             if(this.player.posX < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX > this.coinArray[i].posX-this.coinArray[i].width)
                 if(this.player.posY < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY > this.coinArray[i].posY-this.coinArray[i].height){
-                        this.addScore(200);
+                    this.addScore(200);
                     this.delCoin(i);
                 }
         }

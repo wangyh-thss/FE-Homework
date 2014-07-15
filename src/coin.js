@@ -34,3 +34,4 @@ var coin = cc.Sprite.extend({
         this.setPosition(this.posX, this.posY);
     }
 });
+

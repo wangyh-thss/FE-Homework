@@ -12,7 +12,7 @@ var property = cc.Sprite.extend({
     ctor : function(x, y, type, speed){  //type = 0 短  type=1 长
         this._super();
         if(type == 'p_fly'){
-            this.initWithFile(s_fly, cc.rect(0,0,40,40));
+            this.initWithFile(s_fly);
             this.type = 'p_fly';
             this.width = 20;
             this.height = 20;
