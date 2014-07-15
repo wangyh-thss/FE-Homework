@@ -20,13 +20,15 @@ var gameLayer = cc.LayerColor.extend({
         bg.setAnchorPoint(0,0);
         bg.setPosition(0,0);
         //player
-        this.spriteBall = cc.Sprite.create(s_player);
-        this.spriteBall.setPosition(100,50);
-        this.addChild(this.spriteBall);
+        //this.player = cc.Sprite.create(s_player);
+        //this.player.setPosition(100,50);
+        this.player = new player(100, 200);
+        this.addChild(this.player);
         //ground and rock
         this.groundArray = [];
         this.rockArray = [];
-        this.groundArray[0] = new ground(500, 300);
+        this.groundArray[0] = new ground(1000, 50);
+        this.groundArray[0].setFirstGround();
         this.addChild(this.groundArray[0], 1);
         this.schedule(this.updateGround, 0);
         //event
@@ -34,6 +36,7 @@ var gameLayer = cc.LayerColor.extend({
             this.setTouchEnabled(true);
         else if ('mouse' in sys.capabilities )
             this.setMouseEnabled(true);
+        this.schedule(this.onTheGround, 0);
     },
 
     updateGround : function(){
@@ -111,12 +114,27 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     onMouseDown:function(event) {
-        this.jump();
+        console.log('click');
+        this.player.jump();
     },
 
-    jump:function(){
-        var actionBy = cc.JumpBy.create(0.5, cc.p(0, 0), 100, 1);
-        this.spriteBall.runAction(actionBy);
+    onTheGround : function(){
+        var x = this.player.posX;
+        var y = this.player.posY;
+        for(var i = 0; i < this.groundArray.length; i++){
+            if(y <= this.groundArray[i].posY + 40 && y >= this.groundArray[i].posY + 20){
+                if(x > this.groundArray[i].posX - this.groundArray[i].len/2 && x < this.groundArray[i].posX + this.groundArray[i].len/2)
+                    if(this.player.on_ground == true)
+                        return;
+                    else{
+                        if(this.player.falling){
+                            this.player.on_ground = true;
+                            return;
+                        }
+                    }
+            }
+        }
+        this.player.on_ground = false;
     }
 })
 

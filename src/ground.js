@@ -22,6 +22,11 @@ var ground = cc.Sprite.extend({
         this.schedule(this.move, 0);
     },
 
+    setFirstGround : function(){
+        this.posX = 500;
+        this.setPosition(this.posX, this.posY);
+    },
+
     move : function(){
         this.posX = this.posX - this.speed;
         this.setPosition(this.posX, this.posY);

@@ -43,6 +43,7 @@
             'src/gameScene.js',
             'src/ground.js',
             'src/rock.js',
+            'src/player.js'
         ]
     };
 
