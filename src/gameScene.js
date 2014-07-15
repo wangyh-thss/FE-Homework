@@ -131,9 +131,9 @@ var gameLayer = cc.LayerColor.extend({
         if(len > 1300){
             for(i = 300; i <= 1200; i+=300){
                 if(GetRandomNum(-10, 10) > 0)
-                    this.addRock(i, high, 0);
+                    this.addRock(i, high+60, 0);
                 else
-                    this.addRock(i, high, 1);
+                    this.addRock(i, high+20, 1);
             }
         }
         //加入金币
@@ -149,9 +149,9 @@ var gameLayer = cc.LayerColor.extend({
         if(GetRandomNum(1, 100) < 40){
             var pos = GetRandomNum(200, len)
             if(GetRandomNum(-10, 10) > 0)
-                this.addProperty(pos, high+20, 'p_fly');
+                this.addProperty(pos, high+30, 'p_fly');
             else
-                this.addProperty(pos, high+10, 'p_wudi');
+                this.addProperty(pos, high+30, 'p_wudi');
         }
         //添加到层
         this.groundArray[num] = new ground(len, high, this.speed);

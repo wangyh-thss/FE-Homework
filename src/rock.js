@@ -18,7 +18,7 @@ var rock = cc.Sprite.extend({
             this.posY = eval(y) + 20;
         }
         else if(type == 1){
-            this.initWithFile(s_rock, cc.rect(0,0,50,60));
+            this.initWithFile(s_rock, cc.rect(0,0,100,100));
             this.width = 25;
             this.height = 30;
             this.posY = eval(y) + 30;
