@@ -8,10 +8,11 @@ var ground = cc.Sprite.extend({
     posY : null,
     len: null,
 
-    ctor : function(lenth, high){
+    ctor : function(lenth, high, speed){
         this._super();
         this.len = eval(lenth);
         this.posY = eval(high);
+        this.speed = eval(speed);
         this.initWithFile(s_ground, cc.rect(0,0,this.len,30));
         this.posX = cc.Director.getInstance().getWinSize().width + this.len/2;
         this.init();

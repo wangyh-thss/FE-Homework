@@ -2,10 +2,16 @@
  * Created by Wang Yihan on 2014/7/14.
  */
 
+var gameZIndex = {bg: 0, ui: 1, score:2}
+
 var gameLayer = cc.LayerColor.extend({
     groundArray : null,
     rockArray : null,
+    coinArray : null,
+    speed : null,
     player : null,
+    score : null,
+    scoreLabel : null,
 
     ctor : function(){
         this._super();
@@ -15,21 +21,21 @@ var gameLayer = cc.LayerColor.extend({
     init : function(){
         //background
         var bg = cc.Sprite.create(s_background);
-        this.addChild(bg, 0);
+        this.addChild(bg, gameZIndex.bg);
         //this.gameLayer.setColor(cc.c4(255,255,255,255));
         bg.setAnchorPoint(0,0);
         bg.setPosition(0,0);
         //player
-        //this.player = cc.Sprite.create(s_player);
-        //this.player.setPosition(100,50);
         this.player = new player(100, 200);
-        this.addChild(this.player);
-        //ground and rock
+        this.addChild(this.player, gameZIndex.ui);
+        //ground rock coin
         this.groundArray = [];
         this.rockArray = [];
-        this.groundArray[0] = new ground(1000, 50);
+        this.coinArray = [];
+        this.speed = 5;
+        this.groundArray[0] = new ground(1000, 50, this.speed);
         this.groundArray[0].setFirstGround();
-        this.addChild(this.groundArray[0], 1);
+        this.addChild(this.groundArray[0], gameZIndex.ui);
         this.schedule(this.updateGround, 0);
         //event
         if( 'touches' in sys.capabilities )
@@ -37,6 +43,12 @@ var gameLayer = cc.LayerColor.extend({
         else if ('mouse' in sys.capabilities )
             this.setMouseEnabled(true);
         this.schedule(this.onTheGround, 0);
+        //judge dead
+        this.schedule(this.gameOver, 0);
+        //scoreLayer
+        this.score = 0;
+        this.initScoreLable();
+        this.schedule(this.updateScore, 0);
     },
 
     updateGround : function(){
@@ -50,6 +62,9 @@ var gameLayer = cc.LayerColor.extend({
         if(this.rockArray[0] && this.rockArray[0].posX + 20 <= 0){
             this.delRock();
         }
+        if(this.coinArray[0] && this.coinArray[0].posX + 20 <= 0){
+            this.delCoin(0);
+        }
         var num = this.groundArray.length;
         var screenWidth = cc.Director.getInstance().getWinSize().width;
         if(screenWidth - (this.groundArray[num-1].posX + this.groundArray[num-1].len/2) >= 100){
@@ -60,7 +75,7 @@ var gameLayer = cc.LayerColor.extend({
     addGround : function(){
         var size = cc.Director.getInstance().getWinSize();
         var num = this.groundArray.length;
-        var len = GetRandomNum(1200, 1800);
+        var len = GetRandomNum(300, 1800);
         var delta = GetRandomNum(100, 400);
         var upOrDown = GetRandomNum(-10, 10);
         var high;
@@ -81,16 +96,25 @@ var gameLayer = cc.LayerColor.extend({
         }
         //根据长度确定是否加入障碍物
         if(len > 1300){
-            for(var i = 400; i < 1000; i+=200){
+            for(var i = 300; i <= 1200; i+=300){
                 if(GetRandomNum(-10, 10) > 0)
                     this.addRock(i, high, 0);
                 else
                     this.addRock(i, high, 1);
             }
         }
-        this.groundArray[num] = new ground(len, high);
-        this.addChild(this.groundArray[num], 1);
-
+        //加入金币
+        if(len < 1000){
+            for(var i = 300; i <= len-200; i+=100){
+                if(GetRandomNum(-10, 10) > 0)
+                    this.addCoin(i, high, 0);
+                else
+                    this.addCoin(i, high, 1);
+            }
+        }
+        //添加到层
+        this.groundArray[num] = new ground(len, high, this.speed);
+        this.addChild(this.groundArray[num], gameZIndex.ui);
         function GetRandomNum(Min, Max){
             var Range = Max - Min;
             var Rand = Math.random();
@@ -100,8 +124,14 @@ var gameLayer = cc.LayerColor.extend({
 
     addRock : function(x, y, style){
         var num = this.rockArray.length;
-        this.rockArray[num] = new rock(x, y, style);
-        this.addChild(this.rockArray[num], 1);
+        this.rockArray[num] = new rock(x, y, style, this.speed);
+        this.addChild(this.rockArray[num], gameZIndex.ui);
+    },
+
+    addCoin : function(x, y, style){
+        var num = this.coinArray.length;
+        this.coinArray[num] = new coin(x, y, style, this.speed);
+        this.addChild(this.coinArray[num], gameZIndex.ui);
     },
 
     delGround : function(){
@@ -112,9 +142,12 @@ var gameLayer = cc.LayerColor.extend({
         var toDelete = this.rockArray.shift();
         this.removeChild(toDelete, true);
     },
+    delCoin : function(index){
+        this.removeChild(this.coinArray[eval(index)], true);
+        this.coinArray.splice(eval(index), 1);
+    },
 
     onMouseDown:function(event) {
-        console.log('click');
         this.player.jump();
     },
 
@@ -135,6 +168,72 @@ var gameLayer = cc.LayerColor.extend({
             }
         }
         this.player.on_ground = false;
+    },
+
+    gameOver : function(){
+        if(this.collideRock() || this.fallDown()){
+            //dead
+            console.log('dead!!');
+        }
+    },
+
+    collideRock : function(){
+        for(var i = 0; i < this.rockArray.length; i++){
+            if(this.player.posX < this.rockArray[i].posX+this.rockArray[i].width && this.player.posX > this.rockArray[i].posX-this.rockArray[i].width)
+                if(this.player.posY < this.rockArray[i].posY+this.rockArray[i].height && this.player.posY > this.rockArray[i].posY-this.rockArray[i].height)
+                    return true;
+        }
+        return false;
+    },
+
+    collideCoin : function(){
+        console.log(this.coinArray.length)
+        for(var i = 0; i < this.coinArray.length; i++){
+            if(this.player.posX < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX > this.coinArray[i].posX-this.coinArray[i].width)
+                if(this.player.posY < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY > this.coinArray[i].posY-this.coinArray[i].height){
+                    console.log('coin');
+                    if(this.coinArray[i].type == 0)
+                        this.addScore(10);
+                    if(this.coinArray[i].type == 1)
+                        this.addScore(20);
+                    this.delCoin(i);
+                }
+        }
+    },
+
+    fallDown : function(){
+        if(this.player.posY < 0){
+            return true;
+        }
+        return false;
+    },
+
+    speedUp : function(){
+        this.speed = this.speed * 1.5;
+        for(var i = 0; i < this.groundArray.length; i++){
+            this.groundArray[i].speed *= 1.5;
+        }
+        for(var j = 0; j < this.rockArray.length; j++){
+            this.rockArray[j].speed *= 1.5;
+        }
+    },
+
+    initScoreLable : function(){
+        var size = cc.director.getWinSize();
+        this.scoreLabel = cc.LabelTTF.create('Score: 0', 'Consolas', 40);
+        this.scoreLabel.setColor(0,0,0);
+        this.scoreLabel.setPosition(130, size.height - 100);
+        this.addChild(this.scoreLabel, gameZIndex.score);
+    },
+
+    updateScore : function(){
+        this.collideCoin();
+    },
+
+    addScore : function(num){
+        this.score += eval(num);
+        console.log(this.score);
+        this.scoreLabel.setString('Score: ' + this.score);
     }
 })
 

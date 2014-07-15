@@ -1,8 +1,12 @@
 /**
+ * Created by Wang Yihan on 2014/7/15.
+ */
+/**
  * Created by Wang Yihan on 2014/7/14.
  */
 
-var rock = cc.Sprite.extend({
+var coin = cc.Sprite.extend({
+    type : null,
     speed : 5,
     width : null,
     height : null,
@@ -12,13 +16,15 @@ var rock = cc.Sprite.extend({
     ctor : function(x, y, type, speed){  //type = 0 短  type=1 长
         this._super();
         if(type == 0){
-            this.initWithFile(s_rock, cc.rect(0,0,40,40));
+            this.initWithFile(s_coin, cc.rect(0,0,40,40));
+            this.type = 0;
             this.width = 20;
             this.height = 20;
             this.posY = eval(y) + 20;
         }
         else if(type == 1){
-            this.initWithFile(s_rock, cc.rect(0,0,50,60));
+            this.initWithFile(s_coin, cc.rect(0,0,50,60));
+            this.type = 1;
             this.width = 25;
             this.height = 30;
             this.posY = eval(y) + 30;
