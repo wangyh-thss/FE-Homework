@@ -49,6 +49,8 @@ var gameLayer = cc.LayerColor.extend({
         this.score = 0;
         this.initScoreLable();
         this.schedule(this.updateScore, 0);
+        //speed up
+        this.schedule(this.speedUp, 5);
     },
 
     updateGround : function(){
@@ -148,7 +150,7 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     onMouseDown:function(event) {
-        this.player.jump();
+        this.player.fly();
     },
 
     onTheGround : function(){
@@ -187,15 +189,13 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     collideCoin : function(){
-        console.log(this.coinArray.length)
         for(var i = 0; i < this.coinArray.length; i++){
             if(this.player.posX < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX > this.coinArray[i].posX-this.coinArray[i].width)
                 if(this.player.posY < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY > this.coinArray[i].posY-this.coinArray[i].height){
-                    console.log('coin');
                     if(this.coinArray[i].type == 0)
-                        this.addScore(10);
+                        this.addScore(200);
                     if(this.coinArray[i].type == 1)
-                        this.addScore(20);
+                        this.addScore(300);
                     this.delCoin(i);
                 }
         }
@@ -209,12 +209,15 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     speedUp : function(){
-        this.speed = this.speed * 1.5;
+        this.speed = this.speed * 1.2;
         for(var i = 0; i < this.groundArray.length; i++){
-            this.groundArray[i].speed *= 1.5;
+            this.groundArray[i].speed *= 1.2;
         }
         for(var j = 0; j < this.rockArray.length; j++){
-            this.rockArray[j].speed *= 1.5;
+            this.rockArray[j].speed *= 1.2;
+        }
+        for(var j = 0; j < this.coinArray.length; j++){
+            this.coinArray[j].speed *= 1.2;
         }
     },
 
@@ -228,11 +231,13 @@ var gameLayer = cc.LayerColor.extend({
 
     updateScore : function(){
         this.collideCoin();
+        var delta = parseInt(this.speed * 0.2);
+        this.addScore(delta);
+
     },
 
     addScore : function(num){
         this.score += eval(num);
-        console.log(this.score);
         this.scoreLabel.setString('Score: ' + this.score);
     }
 })

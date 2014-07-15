@@ -7,6 +7,7 @@ var player = cc.Sprite.extend({
     posX : null, posY : null,
     on_ground : null,
     falling : null,
+    flyLable : null,
     one_jump : null, two_jump : null,
 
     ctor : function(x, y){
@@ -25,10 +26,13 @@ var player = cc.Sprite.extend({
         this.one_jump = false;
         this.two_jump = false;
         this.falling = true;
+        this.flyLable = false;
         this.schedule(this.move, 0);
     },
 
     jump : function(){
+        if(this.flyLable == true)
+            return;
         if(this.one_jump && this.two_jump)
             return;
         if(this.one_jump == false)
@@ -36,10 +40,17 @@ var player = cc.Sprite.extend({
         else if(this.one_jump == true && this.two_jump == false)
             this.two_jump = true;
         this.on_ground = false;
-        this.velocity = 16;
+        this.velocity = 14;
     },
 
     move : function(){
+        if(this.flyLable == true){
+            if(this.posY < cc.Director.getInstance().getWinSize().height - 100){
+                this.posY = this.posY + this.velocity;
+                this.setPosition(this.posX, this.posY);
+            }
+            return;
+        }
         if(this.velocity < 0){
             this.falling = true;
         }else{
@@ -54,5 +65,16 @@ var player = cc.Sprite.extend({
             this.velocity = 0;
             this.setPosition(this.posX, this.posY);
         }
+    },
+
+    fly : function(){
+        this.velocity = 14;
+        this.flyLable = true;
+        this.scheduleOnce(this.noFly, 2);
+    },
+
+    noFly : function(){
+        this.velocity = 0;
+        this.flyLable = false;
     }
 });
