@@ -5,8 +5,10 @@
 var gameZIndex = {bg: 0, ui: 1, score:2}
 
 var gameLayer = cc.LayerColor.extend({
-    spriteSheet:null,
+    spriteSheetPlayer:null,
+    spriteSheetCoin:null,
     runningAction:null,
+    animFramesCoin:null,
     groundArray : null,
     rockArray : null,
     coinArray : null,
@@ -38,7 +40,7 @@ var gameLayer = cc.LayerColor.extend({
         this.groundArray[0].setFirstGround();
         this.addChild(this.groundArray[0], gameZIndex.ui);
         this.schedule(this.updateGround, 0);
-
+        this.initCoin();
         //event
         if( 'touches' in sys.capabilities )
             this.setTouchEnabled(true);
@@ -63,20 +65,20 @@ var gameLayer = cc.LayerColor.extend({
         this._super();
         // create sprite sheet
         cc.SpriteFrameCache.getInstance().addSpriteFrames(s_runnerplist);
-        this.spriteSheet = cc.SpriteBatchNode.create(s_runner);
-        this.addChild(this.spriteSheet, gameZIndex.ui);
+        this.spriteSheetPlayer = cc.SpriteBatchNode.create(s_runner);
+        this.addChild(this.spriteSheetPlayer, gameZIndex.ui);
         // init runningAction
         var animFrames = [];
         for (var i = 1; i < 9; i++) {
-            var str = i + ".png";
+            var str = "p" + i + ".png";
             var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
             animFrames.push(frame);
         }
         var animation = cc.Animation.create(animFrames, 0.1);
         this.runningAction = cc.RepeatForever.create(cc.Animate.create(animation));
-        this.player = new player(300, 300, '1.png');
+        this.player = new player(300, 300, 'p1.png');
         this.player.runAction(this.runningAction);
-        this.spriteSheet.addChild(this.player);
+        this.spriteSheetPlayer.addChild(this.player);
     },
 
     updateGround : function(){
@@ -163,10 +165,29 @@ var gameLayer = cc.LayerColor.extend({
         this.addChild(this.rockArray[num], gameZIndex.ui);
     },
 
+    initCoin:function(){
+        //create sprite sheet
+        cc.SpriteFrameCache.getInstance().addSpriteFrames(s_coinplist);
+        this.spriteSheetCoin = cc.SpriteBatchNode.create(s_coin);
+        this.addChild(this.spriteSheetCoin, gameZIndex.ui);
+        // init runningAction
+        this.animFramesCoin = [];
+        for (var i = 1; i < 9; i++) {
+            var str = i + ".png";
+            var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
+            this.animFramesCoin.push(frame);
+        }
+    },
+
     addCoin : function(x, y, style){
+        var animation = cc.Animation.create(this.animFramesCoin, 0.1);
+        var coinAction = cc.RepeatForever.create(cc.Animate.create(animation));
+
         var num = this.coinArray.length;
-        this.coinArray[num] = new coin(x, y, style, this.speed);
-        this.addChild(this.coinArray[num], gameZIndex.ui);
+        this.coinArray[num] = new coin(x, y, style, this.speed, "1.png");
+        //this.addChild(this.coinArray[num], gameZIndex.ui);
+        this.coinArray[num].runAction(coinAction);
+        this.spriteSheetCoin.addChild(this.coinArray[num]);
     },
 
     addProperty : function(x, y, style){
@@ -299,7 +320,7 @@ var gameLayer = cc.LayerColor.extend({
     addScore : function(num){
         this.score += eval(num);
         this.scoreLabel.setString('Score: ' + this.score);
-    }
+    },
 
     undead : function(){
         this.undeadLabel = true;

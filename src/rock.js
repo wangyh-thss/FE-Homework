@@ -12,9 +12,9 @@ var rock = cc.Sprite.extend({
     ctor : function(x, y, type, speed){  //type = 0 短  type=1 长
         this._super();
         if(type == 0){
-            this.initWithFile(s_rock, cc.rect(0,0,40,40));
-            this.width = 20;
-            this.height = 20;
+            this.initWithFile(s_rock, cc.rect(0,0,160,160));
+            this.width = 160;
+            this.height = 155;
             this.posY = eval(y) + 20;
         }
         else if(type == 1){
