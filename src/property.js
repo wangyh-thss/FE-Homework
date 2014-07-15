@@ -18,9 +18,9 @@ var property = cc.Sprite.extend({
             this.height = 20;
             this.posY = eval(y) + 20;
         }
-        else if(type == 'p_undead'){
-            this.initWithFile(s_big, cc.rect(0,0,50,60));
-            this.type = 'p_undead';
+        else if(type == 'p_wudi'){
+            this.initWithFile(s_wudi);
+            this.type = 'p_wudi';
             this.width = 25;
             this.height = 30;
             this.posY = eval(y) + 30;

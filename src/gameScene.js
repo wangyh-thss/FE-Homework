@@ -17,7 +17,7 @@ var gameLayer = cc.LayerColor.extend({
     player : null,
     score : null,
     scoreLabel : null,
-    undeadLabel : null,
+    wudiLabel : null,
 
     ctor : function(){
         this._super();
@@ -25,7 +25,7 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     init : function(){
-        this.undeadLabel = false;
+        this.wudiLabel = false;
 
         //player
         this.initPlayer();
@@ -58,7 +58,7 @@ var gameLayer = cc.LayerColor.extend({
         this.schedule(this.updateScore, 0);
 
         //speed up
-        this.schedule(this.speedUp, 8);
+        this.schedule(this.speedUp, 4);
     },
 
     initPlayer : function(){
@@ -108,7 +108,7 @@ var gameLayer = cc.LayerColor.extend({
         var len = GetRandomNum(300, 1800);
         var delta = GetRandomNum(100, 400);
         var upOrDown = GetRandomNum(-10, 10);
-        var high;
+        var high, i;
         //确定与前面一块ground的高度差
         if(upOrDown >= 0 && delta <= 200){
             high = this.groundArray[num-1].posY + delta;
@@ -126,7 +126,7 @@ var gameLayer = cc.LayerColor.extend({
         }
         //根据长度确定是否加入障碍物
         if(len > 1300){
-            for(var i = 300; i <= 1200; i+=300){
+            for(i = 300; i <= 1200; i+=300){
                 if(GetRandomNum(-10, 10) > 0)
                     this.addRock(i, high, 0);
                 else
@@ -135,7 +135,7 @@ var gameLayer = cc.LayerColor.extend({
         }
         //加入金币
         if(len < 1000){
-            for(var i = 300; i <= len-200; i+=100){
+            for(i = 300; i <= len-200; i+=100){
                 if(GetRandomNum(-10, 10) > 0)
                     this.addCoin(i, high);
                 else
@@ -147,7 +147,7 @@ var gameLayer = cc.LayerColor.extend({
             if(GetRandomNum(-10, 10) > 0)
                 this.addProperty(1000, high, 'p_fly');
             else
-                this.addProperty(200, high, 'p_undead');
+                this.addProperty(200, high, 'p_wudi');
         }
         //添加到层
         this.groundArray[num] = new ground(len, high, this.speed);
@@ -236,7 +236,7 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     gameOver : function(){
-        if((this.collideRock() && this.undeadLabel == false) || this.fallDown()){
+        if((this.collideRock() && this.wudiLabel == false) || this.fallDown()){
             //dead
             console.log('dead!!');
         }
@@ -252,7 +252,6 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     collideCoin : function(){
-        console.log(this.coinArray.length, this.propertyArray.length);
         for(var i = 0; i < this.coinArray.length; i++){
             if(this.player.posX < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX > this.coinArray[i].posX-this.coinArray[i].width)
                 if(this.player.posY < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY > this.coinArray[i].posY-this.coinArray[i].height){
@@ -268,8 +267,8 @@ var gameLayer = cc.LayerColor.extend({
                 if(this.player.posY < this.propertyArray[i].posY+this.propertyArray[i].height && this.player.posY > this.propertyArray[i].posY-this.propertyArray[i].height){
                     if(this.propertyArray[i].type == 'p_fly')
                         this.player.fly();
-                    if(this.propertyArray[i].type == 1)
-                        this.addScore(300);
+                    if(this.propertyArray[i].type == 'p_wudi')
+                        this.wudi();
                     this.delProperty(i);
                 }
         }
@@ -282,20 +281,42 @@ var gameLayer = cc.LayerColor.extend({
         return false;
     },
 
-    speedUp : function(){
+    speedUp : function(times){
         var i = 0;
-        this.speed = this.speed * 1.2;
+        if(times == 2)
+            var n = 2;
+        else
+            var n = 1.1;
+        this.speed = this.speed * n;
         for(i = 0; i < this.groundArray.length; i++){
-            this.groundArray[i].speed *= 1.2;
+            this.groundArray[i].speed *= n;
         }
         for(i = 0; i < this.rockArray.length; i++){
-            this.rockArray[i].speed *= 1.2;
+            this.rockArray[i].speed *= n;
         }
         for(i = 0; i < this.coinArray.length; i++){
-            this.coinArray[i].speed *= 1.2;
+            this.coinArray[i].speed *= n;
         }
         for(i = 0; i < this.propertyArray.length; i++){
-            this.propertyArray[i].speed *= 1.2;
+            this.propertyArray[i].speed *= n;
+        }
+    },
+
+    slowDown : function(times){
+        var i = 0;
+        var n = eval(times);
+        this.speed = this.speed / n;
+        for(i = 0; i < this.groundArray.length; i++){
+            this.groundArray[i].speed /= n;
+        }
+        for(i = 0; i < this.rockArray.length; i++){
+            this.rockArray[i].speed /= n;
+        }
+        for(i = 0; i < this.coinArray.length; i++){
+            this.coinArray[i].speed /= n;
+        }
+        for(i = 0; i < this.propertyArray.length; i++){
+            this.propertyArray[i].speed /= n;
         }
     },
 
@@ -319,9 +340,16 @@ var gameLayer = cc.LayerColor.extend({
         this.scoreLabel.setString('Score: ' + this.score);
     },
 
-    undead : function(){
-        this.undeadLabel = true;
-        this.scheduleOnce('this.undeadLable = true', 2000);
+    wudi : function(){
+        this.wudiLabel = true;
+        this.speedUp(2);
+        this.scheduleOnce(this.stopWudi, 3);
+    },
+
+    stopWudi : function(){
+        console.log('stop');
+        this.wudiLabel = false;
+        this.slowDown(2);
     }
 })
 

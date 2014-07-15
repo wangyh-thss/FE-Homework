@@ -7,7 +7,7 @@ var s_coinplist = "coin.plist";
 var s_runner = "runner.png";
 var s_runnerplist = "runner.plist";
 var s_fly = "fly.png";
-var s_big = "big.png";
+var s_wudi = "wudi.png";
 
 var g_resources = [
     //image
@@ -20,7 +20,7 @@ var g_resources = [
     s_background1,
     s_background2,
     s_fly,
-    s_big
+    s_wudi
     //plist
 
     //fnt
