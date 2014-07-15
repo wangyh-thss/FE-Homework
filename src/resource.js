@@ -8,6 +8,9 @@ var s_runner = "runner.png";
 var s_runnerplist = "runner.plist";
 var s_fly = "fly.png";
 var s_wudi = "wudi.png";
+var s_startBackground = "startBackground.png";
+var s_startBotton = "startBotton.png";
+var s_startBotton0 = "startBotton0.png";
 
 var g_resources = [
     //image
@@ -20,7 +23,10 @@ var g_resources = [
     s_background1,
     s_background2,
     s_fly,
-    s_wudi
+    s_wudi,
+    s_startBackground,
+    s_startBotton,
+    s_startBotton0
     //plist
 
     //fnt

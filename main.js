@@ -39,7 +39,7 @@ var cocos2dApp = cc.Application.extend({
         var director = cc.Director.getInstance();
 
         cc.EGLView.getInstance()._adjustSizeToBrowser();
-        var designSize = cc.size(1400, 1008);
+        var designSize = cc.size(1620, 1080);
         var searchPaths = [];
 
         searchPaths.push("res");
@@ -63,4 +63,4 @@ var cocos2dApp = cc.Application.extend({
     }
 });
 
-var myApp = new cocos2dApp(gameScene);
+var myApp = new cocos2dApp(MenuScene);
