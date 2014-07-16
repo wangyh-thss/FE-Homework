@@ -33,7 +33,7 @@ var GameOverLayer = cc.LayerColor.extend({
             cc.AudioEngine.getInstance().playEffect(m_gameoverFail);
         }else{
             localStorage['highScore'] = this.score;
-            this.text_highScore = new cc.LabelTTF.create('New High Score', 'Comic Sans MS', 70);
+            this.text_highScore = new cc.LabelTTF.create('New High Score!!', 'Comic Sans MS', 70);
             this.text_highScore.setColor(new cc.Color3B(255,255,255));
             this.text_highScore.setPosition(winSize.width / 2, winSize.height/2 + 150);
             cc.AudioEngine.getInstance().playEffect(m_highScore);

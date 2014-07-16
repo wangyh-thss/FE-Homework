@@ -23,6 +23,7 @@ var gameLayer = cc.LayerColor.extend({
     player : null,
     score : null,
     scoreLabel : null,
+    highScoreLabel : null,
     wudiLabel : null,
 
     ctor : function(){
@@ -32,6 +33,7 @@ var gameLayer = cc.LayerColor.extend({
     //初始化
     init : function(){
         this.wudiLabel = false;
+        cc.AudioEngine.getInstance().playEffect(m_bgm, true);
 
         //人物
         this.initPlayer();
@@ -416,6 +418,7 @@ var gameLayer = cc.LayerColor.extend({
     gameOver : function(){
         if(this.collideRock() || this.fallDown()){
             //dead
+            cc.AudioEngine.getInstance().stopMusic();
             cc.Director.getInstance().pause();
             this.getParent().addChild(new GameOverLayer(this.score));
         }
@@ -430,6 +433,7 @@ var gameLayer = cc.LayerColor.extend({
                         return true;
                     }else{
                         this.delRock(i);
+                        cc.AudioEngine.getInstance().playEffect(m_rock);
                     }
 
         }
@@ -459,22 +463,26 @@ var gameLayer = cc.LayerColor.extend({
                         if(this.wudiLabel == false)
                             this.wudi();
                     if(this.propertyArray[i].type == 'p_book'){
-                        if(this.player.three_ability == false){
-                            this.numLabelArray[this.numLabelArray.length] = new getScoreLabel(this.player.posX, this.player.posY);
-                            this.numLabelArray[this.numLabelArray.length-1].setString('获得技能：三段跳！！');
-                            this.addChild(this.numLabelArray[this.numLabelArray.length-1], gameZIndex.ui);
-                            this.player.three_ability = true;
-                        }else{
-                            this.numLabelArray[this.numLabelArray.length] = new getScoreLabel(this.player.posX, this.player.posY);
-                            this.addChild(this.numLabelArray[this.numLabelArray.length-1], gameZIndex.ui);
-                            this.addScore(200);
-                        }
-
+                        this.eatBook();
                     }
-
                     this.delProperty(i);
                 }
         }
+    },
+    //吃到升级书，如果没有三段跳技能，则获得该技能，否则加1000分
+    eatBook : function(){
+        if(this.player.three_ability == false){
+            this.numLabelArray[this.numLabelArray.length] = new getScoreLabel(this.player.posX, this.player.posY);
+            this.numLabelArray[this.numLabelArray.length-1].setString('获得技能：三段跳！！');
+            this.addChild(this.numLabelArray[this.numLabelArray.length-1], gameZIndex.ui);
+            this.player.three_ability = true;
+        }else{
+            this.numLabelArray[this.numLabelArray.length] = new getScoreLabel(this.player.posX, this.player.posY);
+            this.numLabelArray[this.numLabelArray.length-1].setString('+1000');
+            this.addChild(this.numLabelArray[this.numLabelArray.length-1], gameZIndex.ui);
+            this.addScore(1000);
+        }
+        cc.AudioEngine.getInstance().playEffect(m_book);
     },
     //整体提速
     speedUp : function(times){
@@ -520,8 +528,14 @@ var gameLayer = cc.LayerColor.extend({
         var size = cc.director.getWinSize();
         this.scoreLabel = cc.LabelTTF.create('Score: 0', 'Consolas', 40);
         this.scoreLabel.setColor(new cc.Color3B(255,255,255));
-        this.scoreLabel.setPosition(130, size.height - 100);
+        this.scoreLabel.setPosition(size.width-200, size.height - 100);
         this.addChild(this.scoreLabel, gameZIndex.score);
+        if(localStorage['highScore']){
+            this.highScoreLabel = cc.LabelTTF.create('High Score:'+localStorage['highScore'], 'Consolas', 40);
+            this.highScoreLabel.setColor(new cc.Color3B(255,255,255));
+            this.highScoreLabel.setPosition(size.width-200, size.height - 160);
+            this.addChild(this.highScoreLabel, gameZIndex.score);
+        }
     },
     //更新分数，与当前速度以及金币数挂钩
     updateScore : function(){
