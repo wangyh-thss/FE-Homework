@@ -13,6 +13,7 @@ var s_startBotton = "startBotton.png";
 var s_startBotton0 = "startBotton0.png";
 var s_restartBotton = "restartBotton.png";
 var s_restartBotton0 = "restartBotton0.png";
+var s_book = "book.png";
 var m_fallDown = "res/fallDown.wav";
 var m_jump = "res/jump.wav";
 var m_speedup = "res/speedup.wav";
@@ -39,6 +40,7 @@ var g_resources = [
     s_startBotton0,
     s_restartBotton,
     s_restartBotton0,
+    s_book,
     //plist
 
     //fnt

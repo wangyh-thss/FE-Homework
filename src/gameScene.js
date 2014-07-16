@@ -13,11 +13,11 @@ var gameLayer = cc.LayerColor.extend({
     flyAction:null,
     rollAction:null,
     wudiAction:null,
-
     animFramesCoin:null,
     groundArray : null,
     rockArray : null,
     coinArray : null,
+    numLabelArray : null,
     propertyArray : null,
     speed : null,
     player : null,
@@ -41,6 +41,7 @@ var gameLayer = cc.LayerColor.extend({
         this.rockArray = [];
         this.coinArray = [];
         this.propertyArray = [];
+        this.numLabelArray = [];
         this.speed = 8;
         this.groundArray[0] = new ground(1800, 50, this.speed);
         this.groundArray[0].setFirstGround();
@@ -237,13 +238,16 @@ var gameLayer = cc.LayerColor.extend({
             this.delGround();
         }
         if(this.rockArray[0] && this.rockArray[0].posX + 20 <= 0){
-            this.delRock();
+            this.delRock(0);
         }
         if(this.coinArray[0] && this.coinArray[0].posX + 20 <= 0){
             this.delCoin(0);
         }
         if(this.propertyArray[0] && this.propertyArray[0].posX + 20 <= 0){
             this.delProperty(0);
+        }
+        if(this.numLabelArray[0] && this.numLabelArray[0].posY > 1400){
+            this.delNumLabel();
         }
         var num = this.groundArray.length;
         var gap = GetRandomNum(60, 100);
@@ -299,11 +303,14 @@ var gameLayer = cc.LayerColor.extend({
         }
         //加入物品
         if(GetRandomNum(1, 100) <= 20){
-            var pos = GetRandomNum(200, len)
-            if(GetRandomNum(-10, 10) > 0)
+            var pos = GetRandomNum(200, len);
+            var typeChoice = GetRandomNum(0, 13)
+            if(typeChoice < 5)
                 this.addProperty(pos, high+30, 'p_fly');
-            else
+            else if(typeChoice > 8)
                 this.addProperty(pos, high+30, 'p_wudi');
+            else
+                this.addProperty(pos, high+30, 'p_book');
         }
         //添加到层
         this.groundArray[num] = new ground(len, high, this.speed);
@@ -356,9 +363,9 @@ var gameLayer = cc.LayerColor.extend({
         var toDelete = this.groundArray.shift();
         this.removeChild(toDelete, true);
     },
-    delRock : function(){
-        var toDelete = this.rockArray.shift();
-        this.removeChild(toDelete, true);
+    delRock : function(index){
+        this.removeChild(this.rockArray[eval(index)], true);
+        this.rockArray.splice(eval(index), 1);
     },
     delCoin : function(index){
         this.spriteSheetCoin.removeChild(this.coinArray[eval(index)], true);
@@ -367,6 +374,10 @@ var gameLayer = cc.LayerColor.extend({
     delProperty : function(index){
         this.removeChild(this.propertyArray[eval(index)], true);
         this.propertyArray.splice(eval(index), 1);
+    },
+    delNumLabel : function(){
+        var toDelete = this.numLabelArray.shift();
+        this.removeChild(toDelete, true);
     },
     //鼠标点击事件
     onMouseDown:function(event) {
@@ -418,6 +429,8 @@ var gameLayer = cc.LayerColor.extend({
                     if(this.wudiLabel == false){
                         cc.AudioEngine.getInstance().playEffect(m_gameoverCatch);
                         return true;
+                    }else{
+                        this.delRock(i);
                     }
 
         }
@@ -429,6 +442,8 @@ var gameLayer = cc.LayerColor.extend({
             if(this.player.posX-50 < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX+50 > this.coinArray[i].posX-this.coinArray[i].width)
                 if(this.player.posY-80 < this.coinArray[i].posY+this.coinArray[i].height && this.player.posY+80 > this.coinArray[i].posY-this.coinArray[i].height){
                     this.addScore(200);
+                    this.numLabelArray[this.numLabelArray.length] = new getScoreLabel(this.player.posX, this.player.posY);
+                    this.addChild(this.numLabelArray[this.numLabelArray.length-1], gameZIndex.ui);
                     cc.AudioEngine.getInstance().playEffect(m_coin);
                     this.delCoin(i);
                 }
@@ -444,6 +459,20 @@ var gameLayer = cc.LayerColor.extend({
                     if(this.propertyArray[i].type == 'p_wudi')
                         if(this.wudiLabel == false)
                             this.wudi();
+                    if(this.propertyArray[i].type == 'p_book'){
+                        if(this.player.three_ability == false){
+                            this.numLabelArray[this.numLabelArray.length] = new getScoreLabel(this.player.posX, this.player.posY);
+                            this.numLabelArray[this.numLabelArray.length-1].setString('获得技能：三段跳！！');
+                            this.addChild(this.numLabelArray[this.numLabelArray.length-1], gameZIndex.ui);
+                            this.player.three_ability = true;
+                        }else{
+                            this.numLabelArray[this.numLabelArray.length] = new getScoreLabel(this.player.posX, this.player.posY);
+                            this.addChild(this.numLabelArray[this.numLabelArray.length-1], gameZIndex.ui);
+                            this.addScore(200);
+                        }
+
+                    }
+
                     this.delProperty(i);
                 }
         }

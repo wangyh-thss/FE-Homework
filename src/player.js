@@ -9,6 +9,7 @@ var player = cc.Sprite.extend({
     falling : null,                     //下落标识  只有在下落过程中才可以落在地上
     flyLable : null,                    //吃到羽毛后的飞行标识
     one_jump : null, two_jump : null,   //一、二段跳标识
+    three_jump : null, three_ability : null,
     // 玩家状态0running, 1jumpup, 2jumpdown
     playerState : null,
     //构造函数
@@ -27,6 +28,8 @@ var player = cc.Sprite.extend({
         this.on_ground = false;
         this.one_jump = false;
         this.two_jump = false;
+        this.three_jump = false;
+        this.three_ability = false;
         this.falling = true;
         this.flyLable = false;
         this.schedule(this.move, 0);
@@ -36,12 +39,26 @@ var player = cc.Sprite.extend({
     jump : function(){
         if(this.flyLable == true)
             return;
-        if(this.one_jump && this.two_jump)
-            return;
-        if(this.one_jump == false)
-            this.one_jump = true;
-        else if(this.one_jump == true && this.two_jump == false)
-            this.two_jump = true;
+        if(this.three_ability == false){
+            if(this.one_jump && this.two_jump)
+                return;
+            if(this.one_jump == false)
+                this.one_jump = true;
+            else if(this.one_jump == true && this.two_jump == false)
+                this.two_jump = true;
+        }else{
+            if(this.one_jump && this.two_jump && this.three_jump)
+                return;
+            if(this.one_jump == false) {
+                this.one_jump = true;
+            }else{
+                if(this.two_jump == false){
+                    this.two_jump = true;
+                }else{
+                    this.three_jump = true;
+                }
+            }
+        }
         this.on_ground = false;
         cc.AudioEngine.getInstance().playEffect(m_jump);
         this.velocity = 32;
@@ -65,7 +82,7 @@ var player = cc.Sprite.extend({
             this.velocity = this.velocity - this.accelerate;
             this.setPosition(this.posX, this.posY);
         }else{
-            this.one_jump = this.two_jump = this.falling = false;
+            this.one_jump = this.two_jump = this.three_jump = this.falling = false;
             this.velocity = 0;
             this.setPosition(this.posX, this.posY);
         }

@@ -14,15 +14,22 @@ var property = cc.Sprite.extend({
         if(type == 'p_fly'){
             this.initWithFile(s_fly);
             this.type = 'p_fly';
-            this.width = 20;
-            this.height = 20;
+            this.width = 33;
+            this.height = 50;
             this.posY = eval(y) + 20;
         }
         else if(type == 'p_wudi'){
             this.initWithFile(s_wudi);
             this.type = 'p_wudi';
-            this.width = 25;
-            this.height = 30;
+            this.width = 33;
+            this.height = 50;
+            this.posY = eval(y) + 30;
+        }
+        else if(type == 'p_book'){
+            this.initWithFile(s_book);
+            this.type = 'p_book';
+            this.width = 33;
+            this.height = 50;
             this.posY = eval(y) + 30;
         }
         this.posX = cc.Director.getInstance().getWinSize().width + eval(x);

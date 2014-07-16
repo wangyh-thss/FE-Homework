@@ -46,7 +46,7 @@ var getScoreLabel = cc.LabelTTF.extend({
         this.posX = eval(x);
         //this.label = cc.LabelTTF.create('+200', 'Consolas', 40);
         //this.label.setColor(0,0,0);
-        this.initWithString('+200', 'Harrington', 70);
+        this.initWithString('+200', 'Harrington', 40);
         this.setColor(new cc.Color3B(255,255,0));
         console.log(this.posX, this.posY);
         this.setPosition(this.posX, this.posY);
