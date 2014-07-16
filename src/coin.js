@@ -50,7 +50,7 @@ var getScoreLabel = cc.LabelTTF.extend({
         this.setColor(new cc.Color3B(255,255,0));
         console.log(this.posX, this.posY);
         this.setPosition(this.posX, this.posY);
-        this.action = cc.FadeOut.create(1.0);
+        this.action = cc.FadeOut.create(2.0);
         this.speed = 5;
         this.runAction(this.action);
         this.schedule(this.move, 0);

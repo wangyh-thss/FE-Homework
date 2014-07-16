@@ -91,7 +91,7 @@ var player = cc.Sprite.extend({
     fly : function(){
         this.velocity = 14;
         this.flyLable = true;
-        this.scheduleOnce(this.fallDown, 2.5);
+        this.scheduleOnce(this.fallDown, 3.0);
         cc.AudioEngine.getInstance().playEffect(m_fly);
     },
     fallDown : function(){

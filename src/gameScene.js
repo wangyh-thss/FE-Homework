@@ -520,7 +520,7 @@ var gameLayer = cc.LayerColor.extend({
     initScoreLable : function(){
         var size = cc.director.getWinSize();
         this.scoreLabel = cc.LabelTTF.create('Score: 0', 'Consolas', 40);
-        this.scoreLabel.setColor(0,0,0);
+        this.scoreLabel.setColor(new cc.Color3B(255,255,255));
         this.scoreLabel.setPosition(130, size.height - 100);
         this.addChild(this.scoreLabel, gameZIndex.score);
     },

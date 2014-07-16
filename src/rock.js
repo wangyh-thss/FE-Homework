@@ -12,15 +12,15 @@ var rock = cc.Sprite.extend({
     ctor : function(x, y, type, speed){  //type = 0 短  type=1 长
         this._super();
         if(type == 0){
-            this.initWithFile(s_rock, cc.rect(0,0,160,160));
-            this.width = 80;
-            this.height = 80;
+            this.initWithFile(s_rock0, cc.rect(0,0,110,128));
+            this.width = 55;
+            this.height = 64;
             this.posY = eval(y) + 20;
         }
         else if(type == 1){
-            this.initWithFile(s_rock, cc.rect(0,0,100,100));
-            this.width = 50;
-            this.height = 50;
+            this.initWithFile(s_rock1, cc.rect(0,0,68,79));
+            this.width = 34;
+            this.height = 39.5;
             this.posY = eval(y) + 30;
         }
         this.posX = cc.Director.getInstance().getWinSize().width + eval(x);

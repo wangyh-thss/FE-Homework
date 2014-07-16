@@ -1,7 +1,8 @@
 var s_background1 = "background1.png";
 var s_background2 = "background2.png";
 var s_ground = "ground.png";
-var s_rock = 'rock.png';
+var s_rock0 = 'rock0.png';
+var s_rock1 = 'rock1.png';
 var s_coin = "coin.png";
 var s_coinplist = "coin.plist";
 var s_runner = "runner.png";
@@ -26,7 +27,8 @@ var m_gameoverCatch = "res/gameover_catch.wav";
 var g_resources = [
     //image
     s_ground,
-    s_rock,
+    s_rock0,
+    s_rock1,
     s_coin,
     s_coinplist,
     s_runner,
