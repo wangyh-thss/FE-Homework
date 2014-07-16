@@ -8,7 +8,7 @@ var property = cc.Sprite.extend({
     height : null,
     posX : null,
     posY : null,
-
+    //构造函数，根据不同类型加载不同图片
     ctor : function(x, y, type, speed){  //type = 0 短  type=1 长
         this._super();
         if(type == 'p_fly'){

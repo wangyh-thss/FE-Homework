@@ -23,14 +23,14 @@ var gameLayer = cc.LayerColor.extend({
         this._super();
         this.init();
     },
-
+    //初始化
     init : function(){
         this.wudiLabel = false;
 
-        //player
+        //人物
         this.initPlayer();
 
-        //ground rock coin
+        //地面  障碍物  金币  物品
         this.groundArray = [];
         this.rockArray = [];
         this.coinArray = [];
@@ -49,7 +49,7 @@ var gameLayer = cc.LayerColor.extend({
         this.schedule(this.onTheGround, 0);
         this.schedule(this.collideProperty, 0);
 
-        //judge dead
+        //随时检测游戏结束条件
         this.schedule(this.gameOver, 0);
 
         //score
@@ -108,7 +108,7 @@ var gameLayer = cc.LayerColor.extend({
     addGround : function(){
         var size = cc.Director.getInstance().getWinSize();
         var num = this.groundArray.length;
-        var len = GetRandomNum(300, 1800);
+        var len = GetRandomNum(300, 2300);
         var delta = GetRandomNum(100, 400);
         var upOrDown = GetRandomNum(-10, 10);
         var high, i;
@@ -131,7 +131,7 @@ var gameLayer = cc.LayerColor.extend({
         }
         //根据长度确定是否加入障碍物
         if(len > 1300){
-            for(i = 300; i <= 1200; i+=500){
+            for(i = 500; i <= len-500; i+=600){
                 if(GetRandomNum(-10, 10) > 0)
                     this.addRock(i, high+60, 0);
                 else
@@ -141,11 +141,11 @@ var gameLayer = cc.LayerColor.extend({
         //加入金币
         if(len < 1200){
             for(i = 300; i <= len-300; i+=100){
-                    this.addCoin(i, high + 40);
+                    this.addCoin(i, high + 70);
             }
         }
         //加入物品
-        if(GetRandomNum(1, 100) < 25){
+        if(GetRandomNum(1, 100) <= 20){
             var pos = GetRandomNum(200, len)
             if(GetRandomNum(-10, 10) > 0)
                 this.addProperty(pos, high+30, 'p_fly');
@@ -155,19 +155,20 @@ var gameLayer = cc.LayerColor.extend({
         //添加到层
         this.groundArray[num] = new ground(len, high, this.speed);
         this.addChild(this.groundArray[num], gameZIndex.ui);
+        //随机函数
         function GetRandomNum(Min, Max){
             var Range = Max - Min;
             var Rand = Math.random();
             return(Min + Math.round(Rand * Range));
         }
     },
-
+    //指定位置添加障碍物
     addRock : function(x, y, style){
         var num = this.rockArray.length;
         this.rockArray[num] = new rock(x, y, style, this.speed);
         this.addChild(this.rockArray[num], gameZIndex.ui);
     },
-
+    //初始化金币动画
     initCoin:function(){
         //create sprite sheet
         cc.SpriteFrameCache.getInstance().addSpriteFrames(s_coinplist);
@@ -181,7 +182,7 @@ var gameLayer = cc.LayerColor.extend({
             this.animFramesCoin.push(frame);
         }
     },
-
+    //指定位置添加金币
     addCoin : function(x, y){
         var animation = cc.Animation.create(this.animFramesCoin, 0.1);
         var coinAction = cc.RepeatForever.create(cc.Animate.create(animation));
@@ -191,13 +192,13 @@ var gameLayer = cc.LayerColor.extend({
         this.coinArray[num].runAction(coinAction);
         this.spriteSheetCoin.addChild(this.coinArray[num]);
     },
-
+    //指定位置添加指定物品
     addProperty : function(x, y, style){
         var num = this.propertyArray.length;
         this.propertyArray[num] = new property(x, y, style, this.speed);
         this.addChild(this.propertyArray[num], gameZIndex.ui);
     },
-
+    //删除无效的地面、障碍物、金币、物品
     delGround : function(){
         var toDelete = this.groundArray.shift();
         this.removeChild(toDelete, true);
@@ -214,11 +215,11 @@ var gameLayer = cc.LayerColor.extend({
         this.removeChild(this.propertyArray[eval(index)], true);
         this.propertyArray.splice(eval(index), 1);
     },
-
+    //鼠标点击事件
     onMouseDown:function(event) {
         this.player.jump();
     },
-
+    //判断是否在地面上
     onTheGround : function(){
         var x = this.player.posX;
         var y = this.player.posY;
@@ -237,14 +238,21 @@ var gameLayer = cc.LayerColor.extend({
         }
         this.player.on_ground = false;
     },
-
+    //掉下gameover
+    fallDown : function(){
+        if(this.player.posY < 0){
+            return true;
+        }
+        return false;
+    },
+    //判断游戏结束条件
     gameOver : function(){
         if((this.collideRock() && this.wudiLabel == false) || this.fallDown()){
             //dead
             console.log('dead!!');
         }
     },
-
+    //判断是否与障碍物碰撞
     collideRock : function(){
         for(var i = 0; i < this.rockArray.length; i++){
             if(this.player.posX-50 < this.rockArray[i].posX+this.rockArray[i].width && this.player.posX+50 > this.rockArray[i].posX-this.rockArray[i].width)
@@ -253,7 +261,7 @@ var gameLayer = cc.LayerColor.extend({
         }
         return false;
     },
-
+    //判断是否吃到金币，并触发事件
     collideCoin : function(){
         for(var i = 0; i < this.coinArray.length; i++){
             if(this.player.posX-50 < this.coinArray[i].posX+this.coinArray[i].width && this.player.posX+50 > this.coinArray[i].posX-this.coinArray[i].width)
@@ -263,7 +271,7 @@ var gameLayer = cc.LayerColor.extend({
                 }
         }
     },
-
+    //判断是否吃到物品，并触发事件
     collideProperty : function(){
         for(var i = 0; i < this.propertyArray.length; i++){
             if(this.player.posX-50 < this.propertyArray[i].posX+this.propertyArray[i].width && this.player.posX+50 > this.propertyArray[i].posX-this.propertyArray[i].width)
@@ -276,14 +284,7 @@ var gameLayer = cc.LayerColor.extend({
                 }
         }
     },
-
-    fallDown : function(){
-        if(this.player.posY < 0){
-            return true;
-        }
-        return false;
-    },
-
+    //整体提速
     speedUp : function(times){
         var i = 0;
         if(times == 2)
@@ -304,7 +305,7 @@ var gameLayer = cc.LayerColor.extend({
             this.propertyArray[i].speed *= n;
         }
     },
-
+    //降速
     slowDown : function(times){
         var i = 0;
         var n = eval(times);
@@ -322,7 +323,7 @@ var gameLayer = cc.LayerColor.extend({
             this.propertyArray[i].speed /= n;
         }
     },
-
+    //初始化分数显示
     initScoreLable : function(){
         var size = cc.director.getWinSize();
         this.scoreLabel = cc.LabelTTF.create('Score: 0', 'Consolas', 40);
@@ -330,25 +331,24 @@ var gameLayer = cc.LayerColor.extend({
         this.scoreLabel.setPosition(130, size.height - 100);
         this.addChild(this.scoreLabel, gameZIndex.score);
     },
-
+    //更新分数，与当前速度以及金币数挂钩
     updateScore : function(){
         this.collideCoin();
         var delta = parseInt(this.speed * 0.2);
         this.addScore(delta);
 
     },
-
+    //增加分数
     addScore : function(num){
         this.score += eval(num);
         this.scoreLabel.setString('Score: ' + this.score);
     },
-
+    //无敌：加速并不死
     wudi : function(){
         this.wudiLabel = true;
         this.speedUp(2);
         this.scheduleOnce(this.stopWudi, 3);
     },
-
     stopWudi : function(){
         console.log('stop');
         this.wudiLabel = false;

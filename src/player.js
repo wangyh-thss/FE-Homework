@@ -5,11 +5,11 @@ var player = cc.Sprite.extend({
     velocity : null,
     accelerate : null,
     posX : null, posY : null,
-    on_ground : null,
-    falling : null,
-    flyLable : null,
-    one_jump : null, two_jump : null,
-
+    on_ground : null,                   //悬空标识
+    falling : null,                     //下落标识  只有在下落过程中才可以落在地上
+    flyLable : null,                    //吃到羽毛后的飞行标识
+    one_jump : null, two_jump : null,   //一、二段跳标识
+    //构造函数
     ctor : function(x, y, str){
         this._super();
         this.posX = eval(x);
@@ -17,7 +17,7 @@ var player = cc.Sprite.extend({
         this.initWithSpriteFrameName(str);
         this.init();
     },
-
+    //初始化
     init : function(){
         this.setPosition(this.posX, this.posY);
         this.velocity = 0;
@@ -29,7 +29,7 @@ var player = cc.Sprite.extend({
         this.flyLable = false;
         this.schedule(this.move, 0);
     },
-
+    //跳起
     jump : function(){
         if(this.flyLable == true)
             return;
@@ -42,7 +42,7 @@ var player = cc.Sprite.extend({
         this.on_ground = false;
         this.velocity = 20;
     },
-
+    //根据不同的标识状态和速度&加速度更新位置
     move : function(){
         if(this.flyLable == true){
             if(this.posY < cc.Director.getInstance().getWinSize().height - 100){
@@ -66,14 +66,13 @@ var player = cc.Sprite.extend({
             this.setPosition(this.posX, this.posY);
         }
     },
-
+    //飞行模式
     fly : function(){
         this.velocity = 14;
         this.flyLable = true;
-        this.scheduleOnce(this.noFly, 2);
+        this.scheduleOnce(this.fallDown, 2);
     },
-
-    noFly : function(){
+    fallDown : function(){
         this.velocity = 0;
         this.flyLable = false;
     }
