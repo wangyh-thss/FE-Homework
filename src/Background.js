@@ -25,7 +25,6 @@ var BackgroundLayer = cc.Layer.extend({
         var box0 = this.background2.getBoundingBox();
         if(box.x+box.width <= 0){
             this.background1.setPositionX(box0.x+box0.width*3/2);
-            console.log("x");
         };
         if(box0.x+box0.width <= 0){
             this.background2.setPositionX(box.x+box.width*3/2);

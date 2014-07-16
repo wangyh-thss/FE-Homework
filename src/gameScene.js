@@ -88,7 +88,7 @@ var gameLayer = cc.LayerColor.extend({
         {
             if(this.player.falling == true) {
                 this.player.stopAllActions();
-                this.player.runAction(this.runningAction);
+                this.player.runAction(this.jumpDownAction);
                 this.player.playerState = 2;
             }
         }
@@ -300,7 +300,6 @@ var gameLayer = cc.LayerColor.extend({
                         if(this.player.falling){
                             this.player.on_ground = true;
                             this.player.alterPosition(this.groundArray[i].posY);
-                            console.log('play');
                             cc.AudioEngine.getInstance().playEffect(m_fallDown);
                             return;
                         }
@@ -431,7 +430,6 @@ var gameLayer = cc.LayerColor.extend({
         cc.AudioEngine.getInstance().playEffect(m_speedup);
     },
     stopWudi : function(){
-        console.log('stop');
         this.wudiLabel = false;
         this.slowDown(3);
     }
