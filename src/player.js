@@ -30,7 +30,7 @@ var player = cc.Sprite.extend({
         this.falling = true;
         this.flyLable = false;
         this.schedule(this.move, 0);
-        this.playerState = 0;
+        this.playerState = 'run';
     },
     //跳起
     jump : function(){
