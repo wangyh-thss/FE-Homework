@@ -33,7 +33,7 @@ var gameLayer = cc.LayerColor.extend({
     //初始化
     init : function(){
         this.wudiLabel = false;
-        //cc.AudioEngine.getInstance().playEffect(m_bgm, true);
+        cc.AudioEngine.getInstance().playEffect(m_bgm, true);
 
         //人物
         this.initPlayer();
@@ -409,6 +409,7 @@ var gameLayer = cc.LayerColor.extend({
     //掉下gameover
     fallDown : function(){
         if(this.player.posY < -100){
+            cc.AudioEngine.getInstance().stopAllEffects();
             cc.AudioEngine.getInstance().playEffect(m_gameoverFall);
             return true;
         }
@@ -418,7 +419,6 @@ var gameLayer = cc.LayerColor.extend({
     gameOver : function(){
         if(this.collideRock() || this.fallDown()){
             //dead
-            //cc.AudioEngine.getInstance().stopMusic();
             cc.Director.getInstance().pause();
             this.getParent().addChild(new GameOverLayer(this.score));
         }
@@ -429,6 +429,7 @@ var gameLayer = cc.LayerColor.extend({
             if(this.player.posX-40 < this.rockArray[i].posX+this.rockArray[i].width && this.player.posX+40 > this.rockArray[i].posX-this.rockArray[i].width)
                 if(this.player.posY-50 < this.rockArray[i].posY+this.rockArray[i].height && this.player.posY+50 > this.rockArray[i].posY-this.rockArray[i].height)
                     if(this.wudiLabel == false){
+                        cc.AudioEngine.getInstance().stopAllEffects();
                         cc.AudioEngine.getInstance().playEffect(m_gameoverCatch);
                         return true;
                     }else{
