@@ -8,6 +8,8 @@ var gameLayer = cc.LayerColor.extend({
     spriteSheetPlayer:null,
     spriteSheetCoin:null,
     runningAction:null,
+    jumpUpAction:null,
+    jumpDownAction:null,
     animFramesCoin:null,
     groundArray : null,
     rockArray : null,
@@ -59,6 +61,46 @@ var gameLayer = cc.LayerColor.extend({
 
         //定期加速
         this.schedule(this.speedUp, 4);
+        //每帧检测
+        this.scheduleUpdate();
+    },
+
+    onExit:function() {
+        this.runningAction.release();
+        this.jumpUpAction.release();
+        this.jumpDownAction.release();
+
+        this._super();
+    },
+
+    update : function(){
+        if(this.player.playerState == 0)
+        {
+            if(this.player.velocity > 0)
+            {
+                this.player.stopAllActions();
+                this.player.runAction(this.jumpUpAction);
+                cc.log('xx');
+                this.player.playerState = 1;
+            }
+        }
+        if(this.player.playerState == 1)
+        {
+            if(this.player.falling == true) {
+                this.player.stopAllActions();
+                this.player.runAction(this.runningAction);
+                this.player.playerState = 2;
+            }
+        }
+        if(this.player.playerState == 2)
+        {
+            if(this.player.on_ground == true)
+            {
+                this.player.stopAllActions();
+                this.player.runAction(this.runningAction);
+                this.player.playerState = 0;
+            }
+        }
     },
 
     initPlayer : function(){
@@ -76,6 +118,25 @@ var gameLayer = cc.LayerColor.extend({
         }
         var animation = cc.Animation.create(animFrames, 0.1);
         this.runningAction = cc.RepeatForever.create(cc.Animate.create(animation));
+        this.runningAction.retain();
+
+        //init jumpAction
+        animFrames = [];
+        var str = "jumpup.png";
+        var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
+        animFrames.push(frame);
+        animation = cc.Animation.create(animFrames, 0.5);
+        this.jumpUpAction = cc.RepeatForever.create(cc.Animate.create(animation));
+        this.jumpUpAction.retain();
+
+        animFrames = [];
+        str = "jumpdown.png";
+        frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
+        animFrames.push(frame);
+        animation = cc.Animation.create(animFrames, 0.5);
+        this.jumpDownAction = cc.RepeatForever.create(cc.Animate.create(animation));
+        this.jumpDownAction.retain();
+
         this.player = new player(300, 300, 'p1.png');
         this.player.runAction(this.runningAction);
         this.spriteSheetPlayer.addChild(this.player);
