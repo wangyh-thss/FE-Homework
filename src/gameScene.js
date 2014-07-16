@@ -33,7 +33,7 @@ var gameLayer = cc.LayerColor.extend({
     //初始化
     init : function(){
         this.wudiLabel = false;
-        cc.AudioEngine.getInstance().playEffect(m_bgm, true);
+        //cc.AudioEngine.getInstance().playEffect(m_bgm, true);
 
         //人物
         this.initPlayer();
@@ -418,7 +418,7 @@ var gameLayer = cc.LayerColor.extend({
     gameOver : function(){
         if(this.collideRock() || this.fallDown()){
             //dead
-            cc.AudioEngine.getInstance().stopMusic();
+            //cc.AudioEngine.getInstance().stopMusic();
             cc.Director.getInstance().pause();
             this.getParent().addChild(new GameOverLayer(this.score));
         }
