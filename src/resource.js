@@ -11,6 +11,8 @@ var s_wudi = "wudi.png";
 var s_startBackground = "startBackground.png";
 var s_startBotton = "startBotton.png";
 var s_startBotton0 = "startBotton0.png";
+var s_restartBotton = "restartBotton.png";
+var s_restartBotton0 = "restartBotton0.png";
 
 var g_resources = [
     //image
@@ -26,7 +28,9 @@ var g_resources = [
     s_wudi,
     s_startBackground,
     s_startBotton,
-    s_startBotton0
+    s_startBotton0,
+    s_restartBotton,
+    s_restartBotton0
     //plist
 
     //fnt

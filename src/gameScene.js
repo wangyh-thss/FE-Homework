@@ -257,6 +257,8 @@ var gameLayer = cc.LayerColor.extend({
         if((this.collideRock() && this.wudiLabel == false) || this.fallDown()){
             //dead
             console.log('dead!!');
+            cc.Director.getInstance().pause();
+            this.addChild(new GameOverLayer());
         }
     },
     //判断是否与障碍物碰撞
