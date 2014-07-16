@@ -9,7 +9,7 @@ var player = cc.Sprite.extend({
     falling : null,                     //下落标识  只有在下落过程中才可以落在地上
     flyLable : null,                    //吃到羽毛后的飞行标识
     one_jump : null, two_jump : null,   //一、二段跳标识
-    // 动作标识 0为奔跑，1为jumpUp, 2为jumpDown
+    // 玩家状态0running, 1jumpup, 2jumpdown
     playerState : null,
     //构造函数
     ctor : function(x, y, str){
