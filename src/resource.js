@@ -26,7 +26,7 @@ var m_gameoverCatch = "res/gameover_catch.wav";
 var m_highScore = "res/highScore.wav";
 var m_rock = "res/rock.wav";
 var m_book = "res/book.wav";
-var m_bgm = "res/BGM.mid";
+//var m_bgm = "res/BGM.mid";
 
 var g_resources = [
     //image
@@ -64,7 +64,7 @@ var g_resources = [
     m_gameoverCatch,
     m_highScore,
     m_rock,
-    m_book,
-    m_bgm
+    m_book
+    //m_bgm
     //effect
 ];
