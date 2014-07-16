@@ -52,12 +52,12 @@ var gameLayer = cc.LayerColor.extend({
         //随时检测游戏结束条件
         this.schedule(this.gameOver, 0);
 
-        //score
+        //初始化、更新分数
         this.score = 0;
         this.initScoreLable();
         this.schedule(this.updateScore, 0);
 
-        //speed up
+        //定期加速
         this.schedule(this.speedUp, 4);
     },
 
@@ -82,6 +82,7 @@ var gameLayer = cc.LayerColor.extend({
     },
 
     updateGround : function(){
+        //当元素移出画面将其删除
         if(this.groundArray.length <= 0){
             this.addGround();
             return;
@@ -99,9 +100,15 @@ var gameLayer = cc.LayerColor.extend({
             this.delProperty(0);
         }
         var num = this.groundArray.length;
+        var gap = GetRandomNum(60, 100);
         var screenWidth = cc.Director.getInstance().getWinSize().width;
-        if(screenWidth - (this.groundArray[num-1].posX + this.groundArray[num-1].len/2) >= 100){
+        if(screenWidth - (this.groundArray[num-1].posX + this.groundArray[num-1].len/2) >= gap){
             this.addGround();
+        }
+        function GetRandomNum(Min, Max){
+            var Range = Max - Min;
+            var Rand = Math.random();
+            return(Min + Math.round(Rand * Range));
         }
     },
 
@@ -279,7 +286,8 @@ var gameLayer = cc.LayerColor.extend({
                     if(this.propertyArray[i].type == 'p_fly')
                         this.player.fly();
                     if(this.propertyArray[i].type == 'p_wudi')
-                        this.wudi();
+                        if(this.wudiLabel == false)
+                            this.wudi();
                     this.delProperty(i);
                 }
         }
@@ -287,8 +295,8 @@ var gameLayer = cc.LayerColor.extend({
     //整体提速
     speedUp : function(times){
         var i = 0;
-        if(times == 2)
-            var n = 2;
+        if(times == 3)
+            var n = 3;
         else
             var n = 1.1;
         this.speed = this.speed * n;
@@ -346,13 +354,13 @@ var gameLayer = cc.LayerColor.extend({
     //无敌：加速并不死
     wudi : function(){
         this.wudiLabel = true;
-        this.speedUp(2);
+        this.speedUp(3);
         this.scheduleOnce(this.stopWudi, 3);
     },
     stopWudi : function(){
         console.log('stop');
         this.wudiLabel = false;
-        this.slowDown(2);
+        this.slowDown(3);
     }
 })
 
