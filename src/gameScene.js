@@ -10,6 +10,8 @@ var gameLayer = cc.LayerColor.extend({
     runningAction:null,
     jumpUpAction:null,
     jumpDownAction:null,
+    flyAction:null,
+    rollAction:null,
     animFramesCoin:null,
     groundArray : null,
     rockArray : null,
@@ -69,37 +71,73 @@ var gameLayer = cc.LayerColor.extend({
         this.runningAction.release();
         this.jumpUpAction.release();
         this.jumpDownAction.release();
+        this.rollAction.release();
+        this.flyAction.release();
+
 
         this._super();
     },
 
     update : function(){
-        if(this.player.playerState == 0)
+        if(this.player.playerState == 'run')
         {
             if(this.player.velocity > 0)
             {
                 this.player.stopAllActions();
                 this.player.runAction(this.jumpUpAction);
-                cc.log('xx');
-                this.player.playerState = 1;
+                this.player.playerState = 'jumpUp1';
             }
         }
-        if(this.player.playerState == 1)
+        else if(this.player.playerState == 'jumpUp1')
         {
             if(this.player.falling == true) {
                 this.player.stopAllActions();
                 this.player.runAction(this.jumpDownAction);
-                this.player.playerState = 2;
+                this.player.playerState = 'jumpDown';
+            }
+            else if(this.player.two_jump == true)
+            {
+                this.player.stopAllActions();
+                this.player.runAction(this.rollAction);
+                this.player.playerState = 'jumpUp2';
             }
         }
-        if(this.player.playerState == 2)
+        else if(this.player.playerState == 'jumpDown')
         {
             if(this.player.on_ground == true)
             {
                 this.player.stopAllActions();
                 this.player.runAction(this.runningAction);
-                this.player.playerState = 0;
+                this.player.playerState = 'run';
             }
+            else if(this.player.two_jump == true)
+            {
+                this.player.stopAllActions();
+                this.player.runAction(this.rollAction);
+                this.player.playerState = 'jumpUp2';
+            }
+        }
+        else if(this.player.playerState == 'jumpUp2')
+        {
+            if(this.player.falling == true)
+            {
+                this.player.stopAllActions();
+                this.player.runAction(this.runningAction);
+                this.player.playerState = 'jumpDown';
+            }
+        }
+        //flyAction
+        if(this.player.flyLable == true && this.player.playerState != 'fly')
+        {
+            this.player.stopAllActions();
+            this.player.runAction(this.flyAction);
+            this.player.playerState = 'fly';
+        }
+        if(this.player.flyLable == false && this.player.playerState == 'fly')
+        {
+            this.player.stopAllActions();
+            this.player.runAction(this.jumpDownAction);
+            this.player.playerState = 'jumpDown';
         }
     },
 
@@ -136,6 +174,27 @@ var gameLayer = cc.LayerColor.extend({
         animation = cc.Animation.create(animFrames, 0.5);
         this.jumpDownAction = cc.RepeatForever.create(cc.Animate.create(animation));
         this.jumpDownAction.retain();
+
+        animFrames = [];
+        for (var i = 1; i < 16; i++) {
+            var str = "roll" + i + ".png";
+            var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
+            animFrames.push(frame);
+        }
+        animation = cc.Animation.create(animFrames, 0.01);
+        this.rollAction = cc.RepeatForever.create(cc.Animate.create(animation));
+        this.rollAction.retain();
+
+        animFrames = [];
+        for (var i = 1; i < 20; i++) {
+            var str = "fly" + i + ".png";
+            var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
+            animFrames.push(frame);
+        }
+        animation = cc.Animation.create(animFrames, 0.02);
+        this.flyAction = cc.RepeatForever.create(cc.Animate.create(animation));
+        this.flyAction.retain();
+
 
         this.player = new player(300, 300, 'p1.png');
         this.player.runAction(this.runningAction);
