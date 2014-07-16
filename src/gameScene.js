@@ -12,6 +12,8 @@ var gameLayer = cc.LayerColor.extend({
     jumpDownAction:null,
     flyAction:null,
     rollAction:null,
+    wudiAction:null,
+
     animFramesCoin:null,
     groundArray : null,
     rockArray : null,
@@ -73,13 +75,13 @@ var gameLayer = cc.LayerColor.extend({
         this.jumpDownAction.release();
         this.rollAction.release();
         this.flyAction.release();
-
+        this.wudiAction.release();
 
         this._super();
     },
 
     update : function(){
-        if(this.player.playerState == 'run')
+        if(this.player.playerState == 'run'||this.player.playerState == 'wudi')
         {
             if(this.player.velocity > 0)
             {
@@ -139,6 +141,20 @@ var gameLayer = cc.LayerColor.extend({
             this.player.runAction(this.jumpDownAction);
             this.player.playerState = 'jumpDown';
         }
+        //wudiAction
+        if(this.wudiLabel == true && this.player.playerState != 'wudi')
+        {
+            this.player.stopAllActions();
+            this.player.runAction(this.wudiAction);
+            this.player.playerState = 'wudi';
+            cc.log('xx');
+        }
+        if(this.wudiLabel == false && this.player.playerState == 'wudi')
+        {
+            this.player.stopAllActions();
+            this.player.runAction(this.runningAction);
+            this.player.playerState = 'run';
+        }
     },
 
     initPlayer : function(){
@@ -186,14 +202,24 @@ var gameLayer = cc.LayerColor.extend({
         this.rollAction.retain();
 
         animFrames = [];
-        for (var i = 1; i < 20; i++) {
-            var str = "fly" + i + ".png";
+        for (var i = 1; i < 5; i++) {
+            var str = "playerFly" + i + ".png";
             var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
             animFrames.push(frame);
         }
-        animation = cc.Animation.create(animFrames, 0.02);
+        animation = cc.Animation.create(animFrames, 0.2);
         this.flyAction = cc.RepeatForever.create(cc.Animate.create(animation));
         this.flyAction.retain();
+
+        animFrames = [];
+        for (var i = 1; i < 9; i++) {
+            var str = "wudi" + i + ".png";
+            var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
+            animFrames.push(frame);
+        }
+        animation = cc.Animation.create(animFrames, 0.05);
+        this.wudiAction = cc.RepeatForever.create(cc.Animate.create(animation));
+        this.wudiAction.retain();
 
 
         this.player = new player(300, 300, 'p1.png');
