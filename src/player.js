@@ -21,7 +21,7 @@ var player = cc.Sprite.extend({
     init : function(){
         this.setPosition(this.posX, this.posY);
         this.velocity = 0;
-        this.accelerate = 2.3;
+        this.accelerate = 2.1;
         this.on_ground = false;
         this.one_jump = false;
         this.two_jump = false;
@@ -40,6 +40,7 @@ var player = cc.Sprite.extend({
         else if(this.one_jump == true && this.two_jump == false)
             this.two_jump = true;
         this.on_ground = false;
+        cc.AudioEngine.getInstance().playEffect(m_jump);
         this.velocity = 32;
     },
     //根据不同的标识状态和速度&加速度更新位置
@@ -70,7 +71,8 @@ var player = cc.Sprite.extend({
     fly : function(){
         this.velocity = 14;
         this.flyLable = true;
-        this.scheduleOnce(this.fallDown, 2);
+        this.scheduleOnce(this.fallDown, 2.5);
+        cc.AudioEngine.getInstance().playEffect(m_fly);
     },
     fallDown : function(){
         this.velocity = 0;
@@ -78,7 +80,6 @@ var player = cc.Sprite.extend({
     },
 
     alterPosition : function(y){
-        console.log('alter', y, this.posY);
         this.posY = y+120;
     }
 });
