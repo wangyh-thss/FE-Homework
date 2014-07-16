@@ -231,13 +231,14 @@ var gameLayer = cc.LayerColor.extend({
         var x = this.player.posX;
         var y = this.player.posY;
         for(var i = 0; i < this.groundArray.length; i++){
-            if(y <= this.groundArray[i].posY + 140 && y >= this.groundArray[i].posY + 100){
+            if(y <= this.groundArray[i].posY + 160 && y >= this.groundArray[i].posY + 90){
                 if(x + 30 > this.groundArray[i].posX - this.groundArray[i].len/2 && x - 10 < this.groundArray[i].posX + this.groundArray[i].len/2)
                     if(this.player.on_ground == true)
                         return;
                     else{
                         if(this.player.falling){
                             this.player.on_ground = true;
+                            this.player.alterPosition(this.groundArray[i].posY);
                             return;
                         }
                     }
