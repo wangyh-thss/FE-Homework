@@ -23,6 +23,7 @@ var m_fly = "res/fly.wav";
 var m_gameoverFail = "res/gameover.wav";
 var m_coin = "res/coin.wav";
 var m_gameoverCatch = "res/gameover_catch.wav";
+var m_highScore = "res/highScore.wav";
 
 var g_resources = [
     //image
@@ -57,6 +58,7 @@ var g_resources = [
     m_fly,
     m_gameoverFail,
     m_coin,
-    m_gameoverCatch
+    m_gameoverCatch,
+    m_highScore
     //effect
 ];

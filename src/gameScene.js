@@ -417,8 +417,7 @@ var gameLayer = cc.LayerColor.extend({
         if(this.collideRock() || this.fallDown()){
             //dead
             cc.Director.getInstance().pause();
-            cc.AudioEngine.getInstance().playEffect(m_gameoverFail);
-            this.getParent().addChild(new GameOverLayer());
+            this.getParent().addChild(new GameOverLayer(this.score));
         }
     },
     //判断是否与障碍物碰撞
