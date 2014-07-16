@@ -47,7 +47,8 @@
             'src/coin.js',
             'src/Background.js',
             'src/property.js',
-            'src/Menu.js'
+            'src/Menu.js',
+            'src/GameOver.js'
         ]
     };
 
