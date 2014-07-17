@@ -37,7 +37,6 @@ var gameLayer = cc.LayerColor.extend({
 
         //人物
         this.initPlayer();
-
         //地面  障碍物  金币  物品
         this.groundArray = [];
         this.rockArray = [];
@@ -57,7 +56,6 @@ var gameLayer = cc.LayerColor.extend({
             this.setMouseEnabled(true);
         this.schedule(this.onTheGround, 0);
         this.schedule(this.collideProperty, 0);
-
         //随时检测游戏结束条件
         this.schedule(this.gameOver, 0);
 
@@ -67,7 +65,7 @@ var gameLayer = cc.LayerColor.extend({
         this.schedule(this.updateScore, 0);
 
         //定期加速
-        this.schedule(this.speedUp, 4);
+        this.schedule(this.speedUp, 2.5);
         //每帧检测
         this.scheduleUpdate();
     },
@@ -566,6 +564,7 @@ var gameLayer = cc.LayerColor.extend({
 var gameScene = cc.Scene.extend({
     onEnter : function(){
         this._super();
+        cc.log(cc.Director.getInstance().isSendCleanupToScene());
         this.addChild(new BackgroundLayer);
         this.addChild(new gameLayer);
     }
