@@ -10,7 +10,7 @@ var player = cc.Sprite.extend({
     flyLable : null,                    //吃到羽毛后的飞行标识
     one_jump : null, two_jump : null,   //一、二段跳标识
     three_jump : null, three_ability : null,
-    // 玩家状态0running, 1jumpup, 2jumpdown
+    // 玩家状态，为一个str，可取run, jumpUp1,jumpUp2,jumpdown,fly,wudi等值
     playerState : null,
     //构造函数
     ctor : function(x, y, str){

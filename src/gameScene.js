@@ -81,6 +81,7 @@ var gameLayer = cc.LayerColor.extend({
         this._super();
     },
 
+    //每帧检测，判断玩家当前动作状态并为相应动作添加动画效果
     update : function(){
         if(this.player.playerState == 'run'||this.player.playerState == 'wudi')
         {
@@ -160,11 +161,11 @@ var gameLayer = cc.LayerColor.extend({
 
     initPlayer : function(){
         this._super();
-        // create sprite sheet
+        // 创建精灵表单
         cc.SpriteFrameCache.getInstance().addSpriteFrames(s_runnerplist);
         this.spriteSheetPlayer = cc.SpriteBatchNode.create(s_runner);
         this.addChild(this.spriteSheetPlayer, gameZIndex.ui);
-        // init runningAction
+        //初始化奔跑动作
         var animFrames = [];
         for (var i = 1; i < 9; i++) {
             var str = "p" + i + ".png";
@@ -175,7 +176,7 @@ var gameLayer = cc.LayerColor.extend({
         this.runningAction = cc.RepeatForever.create(cc.Animate.create(animation));
         this.runningAction.retain();
 
-        //init jumpAction
+        //初始化跳跃动作
         animFrames = [];
         var str = "jumpup.png";
         var frame = cc.SpriteFrameCache.getInstance().getSpriteFrame(str);
@@ -192,6 +193,7 @@ var gameLayer = cc.LayerColor.extend({
         this.jumpDownAction = cc.RepeatForever.create(cc.Animate.create(animation));
         this.jumpDownAction.retain();
 
+        //初始化翻滚动作
         animFrames = [];
         for (var i = 1; i < 16; i++) {
             var str = "roll" + i + ".png";
@@ -202,6 +204,7 @@ var gameLayer = cc.LayerColor.extend({
         this.rollAction = cc.RepeatForever.create(cc.Animate.create(animation));
         this.rollAction.retain();
 
+        //初始化飞行动作
         animFrames = [];
         for (var i = 1; i < 5; i++) {
             var str = "playerFly" + i + ".png";
@@ -212,6 +215,7 @@ var gameLayer = cc.LayerColor.extend({
         this.flyAction = cc.RepeatForever.create(cc.Animate.create(animation));
         this.flyAction.retain();
 
+        //初始化无敌动作
         animFrames = [];
         for (var i = 1; i < 9; i++) {
             var str = "wudi" + i + ".png";

@@ -1,7 +1,8 @@
+//游戏结束层
 var GameOverLayer = cc.LayerColor.extend({
     // constructor
-    text_score : null,
-    text_highScore : null,
+    text_score : null,//当前分数
+    text_highScore : null, //本地最高分
     score : null,
     ctor:function (num) {
         this._super();
@@ -40,8 +41,10 @@ var GameOverLayer = cc.LayerColor.extend({
         }
         this.addChild(this.text_highScore);
     },
+    //重新开始按钮事件响应
     onRestart:function (sender) {
         cc.Director.getInstance().resume();
+        //重新建一个游戏场景
         cc.Director.getInstance().replaceScene(new gameScene());
     }
 });

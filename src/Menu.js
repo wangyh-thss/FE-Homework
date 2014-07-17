@@ -1,3 +1,4 @@
+//游戏欢迎页面
 var MenuLayer = cc.Layer.extend({
     ctor : function(){
         this._super();
@@ -24,14 +25,14 @@ var MenuLayer = cc.Layer.extend({
         menu.setPosition(startpos);
         this.addChild(menu);
     },
-
+    //开始按钮事件响应
     onPlay : function(){
         cc.log("==onplay clicked");
         var director = cc.Director.getInstance();
         director.replaceScene(new gameScene());
     }
 });
-
+//创建游戏开始场景
 var MenuScene = cc.Scene.extend({
     onEnter:function(){
         this._super();
